@@ -24,6 +24,7 @@ fn handle_hid(raw_input: &RAWINPUT) {
 
         if raw_keyboard_input.Flags == 0 && raw_keyboard_input.MakeCode == 5 && raw_keyboard_input.Message != 5 {
             let prog_key = ProgrammableKeys::from_u32(raw_keyboard_input.Message);
+            println!("Raw Key: {}", raw_keyboard_input.Message);
             match prog_key {
                 ProgrammableKeys::MACROUNKOWN => {
                     eprintln!("MACROUNKOWN PRESSED");
