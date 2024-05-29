@@ -9,7 +9,7 @@ use input::{Libinput, LibinputInterface, Event};
 use libc::{O_RDONLY, O_RDWR, O_WRONLY};
 use std::sync::{Mutex, Arc};
 
-use crate::programmable_keys::programmable_keys::ProgrammableKeys;
+use crate::programmable_keys::ProgrammableKeys;
 
 const LIBINPUT_FETCH_DELAY: time::Duration = time::Duration::from_millis(20);
 
@@ -38,37 +38,27 @@ fn watch_events(input: Libinput, queue: &Arc<Mutex<Vec<ProgrammableKeys>>> ) {
         match borrowed_input.dispatch(){
             Ok(_) => {
                 for event in borrowed_input {
-                    match event {
-                        Event::Keyboard(event) => {
-                            match event {
-                                KeyboardEvent::Key(event) => {
-                                    match event.key_state() {
-                                        input::event::keyboard::KeyState::Pressed => {
-                                            let prog_key = ProgrammableKeys::from_u32(event.key());
-                                            match prog_key {
-                                                ProgrammableKeys::MACROUNKOWN => {
-                                                    eprintln!("MACROUNKOWN PRESSED");
-                                                },
-                                                _ => {
-                                                    match queue.lock() {
-                                                        Ok(mut borrowed_queue) => {
-                                                            //println!("Pushing {:?} to queue", prog_key);
-                                                            borrowed_queue.push(prog_key);
-                                                        },
-                                                        Err(e) => {
-                                                            eprintln!("Error locking queue: {:?}", e);
-                                                        }
-                                                    }
-                                                }
-                                            }
+                    if let Event::Keyboard(KeyboardEvent::Key(event)) = event {
+                        if event.key_state() == input::event::keyboard::KeyState::Pressed {
+                            let prog_key = ProgrammableKeys::from_u32(event.key());
+                            match prog_key {
+                                MACROUNKOWN => {
+                                    eprintln!("MACROUNKOWN PRESSED");
+                                },
+                                _ => {
+                                    match queue.lock() {
+                                        Ok(mut borrowed_queue) => {
+                                            //println!("Pushing {:?} to queue", prog_key);
+                                            borrowed_queue.push(prog_key);
                                         },
-                                        _ => {}
+                                        Err(e) => {
+                                            eprintln!("Error locking queue: {:?}", e);
+                                        }
                                     }
                                 }
-                                _ => {}
                             }
                         }
-                        _ => {}
+                    
                     }
                 }
             },

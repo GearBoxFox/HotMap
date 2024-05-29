@@ -7,7 +7,7 @@ use tauri::api::path;
 use tauri::Config;
 use num_traits::FromPrimitive;
 
-use crate::programmable_keys::programmable_keys::ProgrammableKeys;
+use crate::programmable_keys::ProgrammableKeys;
 
 #[derive(Serialize, Deserialize, Debug, Clone, Eq, PartialEq)]
 pub enum MacroAction {
