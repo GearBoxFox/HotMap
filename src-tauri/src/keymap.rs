@@ -2,11 +2,11 @@ pub mod keymap {
     use std::fs::File;
     use std::io;
     use std::io::Read;
-    use std::path::Path;
     use serde::{Serialize, Deserialize};
     use rdev::Key;
     use tauri::api::path;
     use tauri::Config;
+    use num_traits::FromPrimitive;
 
     use crate::programmable_keys::programmable_keys::ProgrammableKeys;
 
@@ -42,13 +42,17 @@ pub mod keymap {
     }
 
     impl Keymap {
+        /// Create a new blank keymap with a certain number of buttons
         pub fn new(name: String, count: i32) -> Keymap {
             let mut blank_buttons: Vec<MacroKey> = Vec::new();
 
-            for i in 1..count + 1 {
+            // Fill a blank vec of macros, incrementing for each new button
+            for i in 0..count {
                 blank_buttons.push(
                     MacroKey {
-                        programmable_key: ProgrammableKeys::
+                        programmable_key: FromPrimitive::from_i32(i).unwrap(),
+                        macro_type: MacroType::Once,
+                        actions: vec![MacroAction::None]
                     }
                 )
             }
@@ -56,10 +60,12 @@ pub mod keymap {
             Keymap{
                 map_name: name,
                 button_count: count,
-                buttons: vec![]
+                buttons: blank_buttons
             }
         }
 
+        /// Load a keymap file into a Keymap struct, returning an error
+        /// if no file is found.
         pub fn load_from_file(keymap_name: String, app_config: &Config) -> Result<Keymap, io::Error> {
             // load keymap json file from appdata directory
             let mut keymap_path = path::app_data_dir(app_config).unwrap();
