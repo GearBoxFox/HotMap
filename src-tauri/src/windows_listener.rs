@@ -176,7 +176,7 @@ fn message_loop(hwnd: HWND) {
  
 static mut KEY_QUEUE: Option<Arc<Mutex<Vec<ProgrammableKeys>>>> = None; 
 
-pub fn windows_start(queue: &Arc<Mutex<Vec<ProgrammableKeys>>>){
+pub async fn windows_start(queue: &Arc<Mutex<Vec<ProgrammableKeys>>>){
     let temp = queue.clone();
     unsafe {
         KEY_QUEUE = Some(temp);
