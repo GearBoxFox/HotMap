@@ -1,7 +1,7 @@
 pub mod keymap {
     use std::fs::File;
     use std::io;
-    use std::io::Read;
+    use std::io::{Read, Write};
     use serde::{Serialize, Deserialize};
     use rdev::Key;
     use tauri::api::path;
@@ -64,26 +64,47 @@ pub mod keymap {
             }
         }
 
-        /// Load a keymap file into a Keymap struct, returning an error
+        /// Load a keymap json file into a Keymap struct, returning an error
         /// if no file is found.
         pub fn load_from_file(keymap_name: String, app_config: &Config) -> Result<Keymap, io::Error> {
             // load keymap json file from appdata directory
             let mut keymap_path = path::app_data_dir(app_config).unwrap();
             keymap_path.push("/keymaps/".to_owned() + &*keymap_name + ".json");
 
-            let file_result = File::open(keymap_path);
-
             // check if file exists, if not return an error
-            match file_result {
-                Ok(_) => {
-                    let mut keymap_json = String::new();
-                    file_result.unwrap().read_to_string(&mut keymap_json).expect("Failed to read keymap file!");
-                    let keymap: Keymap = serde_json::from_str(&keymap_json).unwrap();
-                    Ok(keymap)
-                }
-                Err(_) => {
+            let keymap_file = match File::open(keymap_path) {
+                Ok(file) => file,
+                Err(err) => {
                     eprintln!("Failed to find keymap file!");
-                    Err(file_result.err().unwrap())
+                    return Err(err);
+                }
+            };
+
+            let mut keymap_json = String::new();
+            keymap_file.unwrap().read_to_string(&mut keymap_json).expect("Failed to read keymap file!");
+            let keymap: Keymap = serde_json::from_str(&keymap_json).unwrap();
+            Ok(keymap)
+        }
+
+        /// Saves a Keymap struct to a json file
+        pub fn save_to_file(keymap: Keymap, app_config: &Config) -> Result<(), io::Error> {
+            // create the path to keymap json file in the appdata directory
+            let mut keymap_path = path::app_data_dir(app_config).unwrap();
+            keymap_path.push("/keymaps/".to_owned() + &*keymap.map_name + ".json");
+
+            let mut keymap_file = match File::create(keymap_path) {
+                Ok(file) => file,
+                Err(err) => {
+                    eprintln!("Failed to create/overwrite keymap file");
+                    return Err(err)
+                }
+            };
+
+            match keymap_file.write_all(serde_json::to_string(&keymap).expect("Failed to parse keymap file!").as_bytes()) {
+                Ok(_) => Ok(()),
+                Err(err) => {
+                    eprintln!("Failed to write data to keymap file!");
+                    Err(err)
                 }
             }
         }
