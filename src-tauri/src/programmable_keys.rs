@@ -36,7 +36,7 @@ pub enum ProgrammableKeys {
     MACRO29 = 684,
     MACRO30 = 685,
     MACRO31 = 686,
-    MACRO32 = 687,
+    MACRO32 = 687
 }
 
 #[cfg(target_os = "windows")]
@@ -74,7 +74,7 @@ pub enum ProgrammableKeys {
     MACRO29 = 216,
     MACRO30 = 217,
     MACRO31 = 218,
-    MACRO32 = 219,
+    MACRO32 = 219
 }
 
 impl ProgrammableKeys {

@@ -1,13 +1,16 @@
-
 use std::{thread, time};
-use std::path::Path;
 use std::fs::{File, OpenOptions};
-use std::os::unix::{fs::OpenOptionsExt, io::{RawFd, FromRawFd, IntoRawFd}};
-use input::event::KeyboardEvent;
+use std::os::unix::{
+    fs::OpenOptionsExt,
+    io::{FromRawFd, IntoRawFd, RawFd},
+};
+use std::path::Path;
+use std::sync::{Arc, Mutex};
+
+use input::{Event, Libinput, LibinputInterface};
 use input::event::keyboard::KeyboardEventTrait;
-use input::{Libinput, LibinputInterface, Event};
+use input::event::KeyboardEvent;
 use libc::{O_RDONLY, O_RDWR, O_WRONLY};
-use std::sync::{Mutex, Arc};
 
 use crate::programmable_keys::ProgrammableKeys;
 
@@ -32,10 +35,10 @@ impl LibinputInterface for Interface {
     }
 }
 
-fn watch_events(input: Libinput, queue: &Arc<Mutex<Vec<ProgrammableKeys>>> ) {
+fn watch_events(input: Libinput, queue: &Arc<Mutex<Vec<ProgrammableKeys>>>) {
     loop {
-        let mut borrowed_input:Libinput = input.clone();
-        match borrowed_input.dispatch(){
+        let mut borrowed_input: Libinput = input.clone();
+        match borrowed_input.dispatch() {
             Ok(_) => {
                 for event in borrowed_input {
                     if let Event::Keyboard(KeyboardEvent::Key(event)) = event {
@@ -44,13 +47,13 @@ fn watch_events(input: Libinput, queue: &Arc<Mutex<Vec<ProgrammableKeys>>> ) {
                             match prog_key {
                                 ProgrammableKeys::MACROUNKNOWN => {
                                     eprintln!("MACROUNKOWN PRESSED");
-                                },
+                                }
                                 _ => {
                                     match queue.lock() {
                                         Ok(mut borrowed_queue) => {
                                             //println!("Pushing {:?} to queue", prog_key);
                                             borrowed_queue.push(prog_key);
-                                        },
+                                        }
                                         Err(e) => {
                                             eprintln!("Error locking queue: {:?}", e);
                                         }
@@ -58,10 +61,9 @@ fn watch_events(input: Libinput, queue: &Arc<Mutex<Vec<ProgrammableKeys>>> ) {
                                 }
                             }
                         }
-                    
                     }
                 }
-            },
+            }
             Err(err) => {
                 eprintln!("Failed to dispatch libinput: {}", err);
             }
@@ -71,14 +73,14 @@ fn watch_events(input: Libinput, queue: &Arc<Mutex<Vec<ProgrammableKeys>>> ) {
     }
 }
 
-pub fn linux_start(queue: &Arc<Mutex<Vec<ProgrammableKeys>>>){
+pub fn linux_start(queue: &Arc<Mutex<Vec<ProgrammableKeys>>>) {
     let mut input = Libinput::new_with_udev(Interface);
     println!("Created input device!");
 
     match input.udev_assign_seat("seat0") {
         Ok(_) => {
             watch_events(input, &queue);
-        },
+        }
         Err(_) => eprintln!("Failed to assign seat"),
     }
 }

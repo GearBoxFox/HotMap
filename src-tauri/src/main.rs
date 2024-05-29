@@ -13,7 +13,6 @@ use tauri::{CustomMenuItem, SystemTrayMenu, SystemTrayMenuItem};
 
 mod keymap;
 mod programmable_keys;
-
 use crate::programmable_keys::ProgrammableKeys;
 
 const QUEUE_CHECKING_DELAY: time::Duration = time::Duration::from_millis(20);
