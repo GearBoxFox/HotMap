@@ -5,6 +5,8 @@ use std::sync::{Mutex, Arc};
 use std::time;
 use std::io::Error;
 use std::thread;
+use tauri::{Manager, SystemTray, SystemTrayEvent};
+use tauri::{CustomMenuItem, SystemTrayMenu, SystemTrayMenuItem};
 
 mod programmable_keys;
 use crate::programmable_keys::programmable_keys::ProgrammableKeys;
@@ -52,14 +54,52 @@ async fn main() -> Result<(), Error> {
       linux_listener::linux_start(&programmable_keys_arc);
 
       #[cfg(target_os = "windows")]
-      windows_listener::windows_start(&programmable_keys_arc).await;
+      windows_listener::windows_start(&programmable_keys_arc);
       }
     );
 
     // Create tauri app
+    let show = CustomMenuItem::new("show".to_string(), "Show");
+    let quit = CustomMenuItem::new("quit".to_string(), "Quit");
+    let hide = CustomMenuItem::new("hide".to_string(), "Hide");
+    let tray_menu = SystemTrayMenu::new()
+      .add_item(quit)
+      .add_native_item(SystemTrayMenuItem::Separator)
+      .add_item(show)
+      .add_item(hide);
+    let tray = SystemTray::new()
+      .with_menu(tray_menu);
+
     tauri::Builder::default()
-    .run(tauri::generate_context!())
-    .expect("error while running tauri application");
+      .system_tray(tray)
+      .on_system_tray_event(|app, event| match event {
+        SystemTrayEvent::MenuItemClick { id, .. } => {
+          match id.as_str() {
+            "quit" => {
+              std::process::exit(0);
+            }
+            "show" => {
+              let window = app.get_window("main").unwrap();
+              window.show().unwrap();
+            }
+            "hide" => {
+              let window = app.get_window("main").unwrap();
+              window.hide().unwrap();
+            }
+            _ => {}
+          }
+        }
+        _ => {}
+      })
+      .on_window_event(|event| match event.event() {
+        tauri::WindowEvent::CloseRequested { api, .. } => {
+          event.window().hide().unwrap();
+          api.prevent_close();
+        }
+        _ => {}
+      })
+      .run(tauri::generate_context!())
+      .expect("error while running tauri application");
 
     Ok(())
 }
