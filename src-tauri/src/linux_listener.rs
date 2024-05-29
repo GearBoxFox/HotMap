@@ -42,7 +42,7 @@ fn watch_events(input: Libinput, queue: &Arc<Mutex<Vec<ProgrammableKeys>>> ) {
                         if event.key_state() == input::event::keyboard::KeyState::Pressed {
                             let prog_key = ProgrammableKeys::from_u32(event.key());
                             match prog_key {
-                                MACROUNKOWN => {
+                                ProgrammableKeys::MACROUNKNOWN => {
                                     eprintln!("MACROUNKOWN PRESSED");
                                 },
                                 _ => {
