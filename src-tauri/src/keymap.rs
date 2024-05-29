@@ -1,11 +1,12 @@
 use std::fs::File;
 use std::io;
 use std::io::{Read, Write};
-use serde::{Serialize, Deserialize};
+
+use num_traits::FromPrimitive;
 use rdev::Key;
+use serde::{Deserialize, Serialize};
 use tauri::api::path;
 use tauri::Config;
-use num_traits::FromPrimitive;
 
 use crate::programmable_keys::ProgrammableKeys;
 
@@ -15,7 +16,7 @@ pub enum MacroAction {
     Tap(Key),
     Press(Key),
     Release(Key),
-    Delay(i32),
+    Delay(u64),
     None,
 }
 
@@ -28,9 +29,9 @@ pub enum MacroType {
 
 #[derive(Serialize, Deserialize, Debug, Clone, Eq, PartialEq)]
 pub struct MacroKey {
-    programmable_key: ProgrammableKeys,
-    macro_type: MacroType,
-    actions: Vec<MacroAction>,
+    pub programmable_key: ProgrammableKeys,
+    pub macro_type: MacroType,
+    pub actions: Vec<MacroAction>,
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone, Eq, PartialEq)]
@@ -47,13 +48,11 @@ impl Keymap {
 
         // Fill a blank vec of macros, incrementing for each new button
         for i in 0..count {
-            blank_buttons.push(
-                MacroKey {
-                    programmable_key: FromPrimitive::from_i32(i).unwrap(),
-                    macro_type: MacroType::Once,
-                    actions: vec![MacroAction::None],
-                }
-            )
+            blank_buttons.push(MacroKey {
+                programmable_key: FromPrimitive::from_i32(i).unwrap(),
+                macro_type: MacroType::Once,
+                actions: vec![MacroAction::None],
+            })
         }
 
         Keymap {
@@ -80,7 +79,9 @@ impl Keymap {
         };
 
         let mut keymap_json = String::new();
-        keymap_file.read_to_string(&mut keymap_json).expect("Failed to read keymap file!");
+        keymap_file
+            .read_to_string(&mut keymap_json)
+            .expect("Failed to read keymap file!");
         let keymap: Keymap = serde_json::from_str(&keymap_json).unwrap();
         Ok(keymap)
     }
@@ -95,11 +96,15 @@ impl Keymap {
             Ok(file) => file,
             Err(err) => {
                 eprintln!("Failed to create/overwrite keymap file");
-                return Err(err)
+                return Err(err);
             }
         };
 
-        match keymap_file.write_all(serde_json::to_string(&keymap).expect("Failed to parse keymap file!").as_bytes()) {
+        match keymap_file.write_all(
+            serde_json::to_string(&keymap)
+                .expect("Failed to parse keymap file!")
+                .as_bytes(),
+        ) {
             Ok(_) => Ok(()),
             Err(err) => {
                 eprintln!("Failed to write data to keymap file!");

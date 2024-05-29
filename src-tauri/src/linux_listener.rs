@@ -48,17 +48,14 @@ fn watch_events(input: Libinput, queue: &Arc<Mutex<Vec<ProgrammableKeys>>>) {
                                 ProgrammableKeys::MACROUNKNOWN => {
                                     eprintln!("MACROUNKOWN PRESSED");
                                 }
-                                _ => {
-                                    match queue.lock() {
-                                        Ok(mut borrowed_queue) => {
-                                            //println!("Pushing {:?} to queue", prog_key);
-                                            borrowed_queue.push(prog_key);
-                                        }
-                                        Err(e) => {
-                                            eprintln!("Error locking queue: {:?}", e);
-                                        }
+                                _ => match queue.lock() {
+                                    Ok(mut borrowed_queue) => {
+                                        borrowed_queue.push(prog_key);
                                     }
-                                }
+                                    Err(e) => {
+                                        eprintln!("Error locking queue: {:?}", e);
+                                    }
+                                },
                             }
                         }
                     }
