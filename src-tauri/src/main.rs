@@ -1,6 +1,9 @@
 // Prevents additional console window on Windows in release, DO NOT REMOVE!!
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
+#[macro_use]
+extern crate num_derive;
+
 use std::sync::{Mutex, Arc};
 use std::time;
 use std::io::Error;
@@ -8,6 +11,7 @@ use std::thread;
 use tauri::{Manager, SystemTray, SystemTrayEvent};
 use tauri::{CustomMenuItem, SystemTrayMenu, SystemTrayMenuItem};
 
+mod keymap;
 mod programmable_keys;
 use crate::programmable_keys::programmable_keys::ProgrammableKeys;
 
@@ -18,6 +22,7 @@ mod linux_listener;
 
 #[cfg(target_os = "windows")]
 mod windows_listener;
+
 
 #[tokio::main(flavor = "multi_thread", worker_threads = 1)]
 async fn main() -> Result<(), Error> {

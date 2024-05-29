@@ -1,8 +1,9 @@
 pub mod programmable_keys {
+    use serde::{Deserialize, Serialize};
 
     // https://docs.qmk.fm/#/feature_programmable_button
     #[cfg(target_os = "linux")]
-    #[derive(Debug)]
+    #[derive(Debug, Serialize, Deserialize, Clone, Eq, PartialEq, FromPrimitive)]
     pub enum ProgrammableKeys {
         MACROUNKOWN = 0,
         MACRO1 = 656,
@@ -40,7 +41,7 @@ pub mod programmable_keys {
     }
 
     #[cfg(target_os = "windows")]
-    #[derive(Debug)]
+    #[derive(Debug, Serialize, Deserialize, FromPrimitive)]
     pub enum ProgrammableKeys {
         MACROUNKOWN = 0,
         MACRO1 = 261,
