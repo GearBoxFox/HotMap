@@ -8,10 +8,10 @@ use crate::programmable_keys::programmable_keys::ProgrammableKeys;
 const QUEUE_CHECKING_DELAY: time::Duration = time::Duration::from_millis(20);
 
 #[cfg(target_os = "linux")]
-mod linux_listner;
+mod linux_listener;
 
 #[cfg(target_os = "windows")]
-mod window_listener;
+mod windows_listener;
 
 #[tokio::main(flavor = "multi_thread", worker_threads = 1)]
 async fn main() -> Result<(), Error> {
@@ -43,10 +43,10 @@ async fn main() -> Result<(), Error> {
     });
 
     #[cfg(target_os = "linux")]
-    linux_listner::linux_start(&programmable_keys_arc);
+    linux_listener::linux_start(&programmable_keys_arc);
 
     #[cfg(target_os = "windows")]
-    window_listener::windows_start(&programmable_keys_arc);
+    windows_listener::windows_start(&programmable_keys_arc);
 
     Ok(())
 }
