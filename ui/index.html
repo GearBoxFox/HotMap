@@ -12,12 +12,42 @@
 <body>
 <script crossorigin="anonymous" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
         src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-
-<ul class="list-group">
-    <li class="list-group-item">An item</li>
-    <li class="list-group-item">A second item</li>
-    <li class="list-group-item">A third item</li>
-    <li class="list-group-item">A fourth item</li>
-</ul>
+<script src="index.js"></script>
+<div class="container-flex">
+    <!-- Header -->
+    <div class="row bg-primary">
+        <div class="col">
+            <h1 class="h1 fw-bold position-relative top-50 translate-middle-y"
+                style="padding-left: 10px">HotMap</h1>
+        </div>
+        <!-- Dropdown -->
+        <div class="col dropdown-center text-end">
+            <button aria-expanded="false" class="btn btn-primary dropdown-toggle header-dropdown text-nowrap"
+                    data-bs-toggle="dropdown"
+                    style="--bs-btn-padding-y: 1rem; --bs-btn-padding-x: 2rem; --bs-btn-font-size: 1.5rem"
+                    type="button">
+                Dropdown button
+            </button>
+            <ul class="dropdown-menu">
+                <li><h6 class="dropdown-header">Dropdown header</h6></li>
+                <li><a class="dropdown-item" href="#">Action 1</a></li>
+                <li><a class="dropdown-item" href="#">Action 2</a></li>
+            </ul>
+        </div>
+    </div>
+    <div class="row">
+        <!-- Key List -->
+        <div class="list-group col flex-column" style="padding-left: 10px; margin: 5px 5px 5px 5px;">
+            <a class="list-group-item list-group-item-action" href="#" onclick="collapseClick()">Click me to
+                collapse!</a>
+            <a class="list-group-item list-group-item-action" href="#">A list element</a>
+            <a class="list-group-item list-group-item-action" href="#">A list element</a>
+        </div>
+        <!-- Collapsable keybinding -->
+        <div class="col flex-column collapse" id="collapseWidthExample">
+            hello!
+        </div>
+    </div>
+</div>
 </body>
 </html>
