@@ -4,15 +4,14 @@
 #[macro_use]
 extern crate num_derive;
 
+use std::{thread, time};
 use std::io::Error;
 use std::sync::{Arc, Mutex};
-use std::{thread, time};
 
-use rdev::Key;
 use tauri::{CustomMenuItem, SystemTrayMenu, SystemTrayMenuItem};
 use tauri::{Manager, SystemTray, SystemTrayEvent};
 
-use crate::keymap::{Keymap, MacroAction, MacroKey, MacroType};
+use crate::keymap::Keymap;
 use crate::programmable_keys::ProgrammableKeys;
 
 mod keymap;
@@ -25,6 +24,7 @@ mod linux_listener;
 
 #[cfg(target_os = "windows")]
 mod windows_listener;
+mod tauri_commands;
 
 #[tokio::main(flavor = "multi_thread", worker_threads = 1)]
 async fn main() -> Result<(), Error> {

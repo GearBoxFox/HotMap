@@ -1,12 +1,13 @@
-let keybindDiv
-let bsCollapse
+import {invoke} from ""
+
+let keybindingDiv
+let keybindingDivCollapse
 
 document.addEventListener("DOMContentLoaded", () => {
-    keybindDiv = document.getElementById("collapseWidthExample");
-    bsCollapse = new bootstrap.Collapse(keybindDiv);
+    keybindingDiv = document.getElementById("collapseWidthExample");
+    keybindingDivCollapse = new bootstrap.Collapse(keybindingDiv);
 })
 
 function collapseClick() {
-    console.log("I was clicked!")
-    bsCollapse.toggle();
+    keybindingDivCollapse.toggle();
 }
