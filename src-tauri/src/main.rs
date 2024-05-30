@@ -8,9 +8,11 @@ use std::io::Error;
 use std::sync::{Arc, Mutex};
 use std::time;
 
+use rdev::Key;
 use tauri::{CustomMenuItem, SystemTrayMenu, SystemTrayMenuItem};
 use tauri::{Manager, SystemTray, SystemTrayEvent};
 
+use crate::keymap::{Keymap, MacroAction, MacroKey, MacroType};
 use crate::programmable_keys::ProgrammableKeys;
 
 mod keymap;
@@ -26,6 +28,20 @@ mod windows_listener;
 
 #[tokio::main(flavor = "multi_thread", worker_threads = 1)]
 async fn main() -> Result<(), Error> {
+    // Create dummy keymap
+    let keymap: Arc<Mutex<Keymap>> = Arc::new(Mutex::new(Keymap {
+        map_name: "testkeymap".to_string(),
+        button_count: 1,
+        buttons: vec![MacroKey {
+            programmable_key: ProgrammableKeys::MACRO1,
+            macro_type: MacroType::Once,
+            actions: vec![MacroAction::Tap(Key::Num1)],
+        }],
+    }));
+
+    Keymap::save_to_file(keymap.clone(), &tauri::Config::default())
+        .expect("Failed to save keymap!");
+
     // Handle keyboard presses
     let programmable_keys_vec: Vec<ProgrammableKeys> = Vec::new();
     let programmable_keys_arc = Arc::new(Mutex::new(programmable_keys_vec));
@@ -45,7 +61,7 @@ async fn main() -> Result<(), Error> {
 
             match retrieved_key {
                 Some(key) => {
-                    ProgrammableKeys::process_keys(key).await;
+                    ProgrammableKeys::process_keys(key, &keymap).await;
                 }
                 None => {}
             }

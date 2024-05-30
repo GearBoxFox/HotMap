@@ -1,6 +1,8 @@
-use std::fs::File;
+use std::fs::{File, OpenOptions};
 use std::io;
-use std::io::{Read, Write};
+use std::io::{ErrorKind, Read, Write};
+use std::ops::Add;
+use std::sync::{Arc, Mutex};
 
 use num_traits::FromPrimitive;
 use rdev::Key;
@@ -36,9 +38,9 @@ pub struct MacroKey {
 
 #[derive(Serialize, Deserialize, Debug, Clone, Eq, PartialEq)]
 pub struct Keymap {
-    map_name: String,
-    button_count: i32,
-    buttons: Vec<MacroKey>,
+    pub(crate) map_name: String,
+    pub(crate) button_count: i32,
+    pub buttons: Vec<MacroKey>,
 }
 
 impl Keymap {
@@ -87,21 +89,37 @@ impl Keymap {
     }
 
     /// Saves a Keymap struct to a json file
-    pub fn save_to_file(keymap: Keymap, app_config: &Config) -> Result<(), io::Error> {
-        // create the path to keymap json file in the appdata directory
-        let mut keymap_path = path::app_data_dir(app_config).unwrap();
-        keymap_path.push("/keymaps/".to_owned() + &*keymap.map_name + ".json");
-
-        let mut keymap_file = match File::create(keymap_path) {
-            Ok(file) => file,
+    pub fn save_to_file(
+        keymap_arc: Arc<Mutex<Keymap>>,
+        app_config: &Config,
+    ) -> Result<(), io::Error> {
+        // establish a lock on the keymap while reading
+        let keymap = match keymap_arc.lock() {
+            Ok(keymap) => keymap,
             Err(err) => {
-                eprintln!("Failed to create/overwrite keymap file");
-                return Err(err);
+                eprintln!("Failed to establish lock on keymap file to save: {}", err);
+                return Err(io::Error::new(ErrorKind::PermissionDenied, err.to_string()));
             }
         };
 
+        // create the path to keymap json file in the appdata directory
+        let mut keymap_path = path::local_data_dir().unwrap();
+
+        keymap_path.extend(["keymaps"]);
+
+        if !keymap_path.exists() {
+            std::fs::create_dir_all(&keymap_path)?;
+        }
+
+        let mut keymap_file = OpenOptions::new()
+            .write(true)
+            .create(true)
+            .truncate(true)
+            .open(keymap_path.with_file_name(keymap.map_name.to_string().add(".json").as_str()))
+            .unwrap();
+
         match keymap_file.write_all(
-            serde_json::to_string(&keymap)
+            serde_json::to_string(&keymap.clone())
                 .expect("Failed to parse keymap file!")
                 .as_bytes(),
         ) {

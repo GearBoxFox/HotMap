@@ -1,10 +1,11 @@
+use std::sync::{Arc, Mutex};
 use std::thread;
 use std::time::Duration;
 
 use rdev::{EventType, Key, simulate};
 use serde::{Deserialize, Serialize};
 
-use crate::keymap::{MacroAction, MacroKey};
+use crate::keymap::{Keymap, MacroAction, MacroKey};
 
 static DELAY: Duration = Duration::from_millis(20);
 
@@ -246,107 +247,30 @@ impl ProgrammableKeys {
         }
     }
 
-    pub async fn process_keys(key: ProgrammableKeys) {
-        match key {
-            ProgrammableKeys::MACRO1 => {
-                println!("MACRO1 PRESSED");
+    pub async fn process_keys(key: ProgrammableKeys, keymap_arc: &Arc<Mutex<Keymap>>) {
+        let borrowed_map = match keymap_arc.lock() {
+            Ok(keymap) => Some(keymap),
+            Err(err) => {
+                eprintln!("Error retrieving keymap lock: {}", err);
+                None
             }
-            ProgrammableKeys::MACRO2 => {
-                println!("MACRO2 PRESSED");
+        };
+
+        match borrowed_map {
+            Some(keymap) => {
+                let matching_key = match keymap
+                    .buttons
+                    .clone()
+                    .into_iter()
+                    .find(|k| k.programmable_key == key)
+                {
+                    None => return,
+                    Some(key) => key,
+                };
+
+                handle_macro_key(matching_key);
             }
-            ProgrammableKeys::MACRO3 => {
-                println!("MACRO3 PRESSED");
-            }
-            ProgrammableKeys::MACRO4 => {
-                println!("MACRO4 PRESSED");
-            }
-            ProgrammableKeys::MACRO5 => {
-                println!("MACRO5 PRESSED");
-            }
-            ProgrammableKeys::MACRO6 => {
-                println!("MACRO6 PRESSED");
-            }
-            ProgrammableKeys::MACRO7 => {
-                println!("MACRO7 PRESSED");
-            }
-            ProgrammableKeys::MACRO8 => {
-                println!("MACRO8 PRESSED");
-            }
-            ProgrammableKeys::MACRO9 => {
-                println!("MACRO9 PRESSED");
-            }
-            ProgrammableKeys::MACRO10 => {
-                println!("MACRO10 PRESSED");
-            }
-            ProgrammableKeys::MACRO11 => {
-                println!("MACRO11 PRESSED");
-            }
-            ProgrammableKeys::MACRO12 => {
-                println!("MACRO12 PRESSED");
-            }
-            ProgrammableKeys::MACRO13 => {
-                println!("MACRO13 PRESSED");
-            }
-            ProgrammableKeys::MACRO14 => {
-                println!("MACRO14 PRESSED");
-            }
-            ProgrammableKeys::MACRO15 => {
-                println!("MACRO15 PRESSED");
-            }
-            ProgrammableKeys::MACRO16 => {
-                println!("MACRO16 PRESSED");
-            }
-            ProgrammableKeys::MACRO17 => {
-                println!("MACRO17 PRESSED");
-            }
-            ProgrammableKeys::MACRO18 => {
-                println!("MACRO18 PRESSED");
-            }
-            ProgrammableKeys::MACRO19 => {
-                println!("MACRO19 PRESSED");
-            }
-            ProgrammableKeys::MACRO20 => {
-                println!("MACRO20 PRESSED");
-            }
-            ProgrammableKeys::MACRO21 => {
-                println!("MACRO21 PRESSED");
-            }
-            ProgrammableKeys::MACRO22 => {
-                println!("MACRO22 PRESSED");
-            }
-            ProgrammableKeys::MACRO23 => {
-                println!("MACRO23 PRESSED");
-            }
-            ProgrammableKeys::MACRO24 => {
-                println!("MACRO24 PRESSED");
-            }
-            ProgrammableKeys::MACRO25 => {
-                println!("MACRO25 PRESSED");
-            }
-            ProgrammableKeys::MACRO26 => {
-                println!("MACRO26 PRESSED");
-            }
-            ProgrammableKeys::MACRO27 => {
-                println!("MACRO27 PRESSED");
-            }
-            ProgrammableKeys::MACRO28 => {
-                println!("MACRO28 PRESSED");
-            }
-            ProgrammableKeys::MACRO29 => {
-                println!("MACRO29 PRESSED");
-            }
-            ProgrammableKeys::MACRO30 => {
-                println!("MACRO30 PRESSED");
-            }
-            ProgrammableKeys::MACRO31 => {
-                println!("MACRO31 PRESSED");
-            }
-            ProgrammableKeys::MACRO32 => {
-                println!("MACRO32 PRESSED");
-            }
-            _ => {
-                println!("MACROUNKOWN PRESSED");
-            }
+            None => (),
         }
     }
 }
