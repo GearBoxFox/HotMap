@@ -6,7 +6,7 @@ extern crate num_derive;
 
 use std::io::Error;
 use std::sync::{Arc, Mutex};
-use std::time;
+use std::{thread, time};
 
 use rdev::Key;
 use tauri::{CustomMenuItem, SystemTrayMenu, SystemTrayMenuItem};
@@ -29,17 +29,9 @@ mod windows_listener;
 #[tokio::main(flavor = "multi_thread", worker_threads = 1)]
 async fn main() -> Result<(), Error> {
     // Create dummy keymap
-    let keymap: Arc<Mutex<Keymap>> = Arc::new(Mutex::new(Keymap {
-        map_name: "testkeymap".to_string(),
-        button_count: 1,
-        buttons: vec![MacroKey {
-            programmable_key: ProgrammableKeys::MACRO1,
-            macro_type: MacroType::Once,
-            actions: vec![MacroAction::Tap(Key::Num1)],
-        }],
-    }));
+    let keymap: Arc<Mutex<Keymap>> = Arc::new(Mutex::new(Keymap::new(String::from("Test"), 1)));
 
-    Keymap::save_to_file(keymap.clone(), &tauri::Config::default())
+    Keymap::load_from_file(String::from("testkeymap"), &mut keymap.clone())
         .expect("Failed to save keymap!");
 
     // Handle keyboard presses
@@ -47,9 +39,10 @@ async fn main() -> Result<(), Error> {
     let programmable_keys_arc = Arc::new(Mutex::new(programmable_keys_vec));
 
     let queue = programmable_keys_arc.clone();
-    tokio::spawn(async move {
+    thread::spawn(move || {
+        println!("started handler thread");
         loop {
-            tokio::time::sleep(QUEUE_CHECKING_DELAY).await;
+            thread::sleep(QUEUE_CHECKING_DELAY);
 
             let retrieved_key = match queue.lock() {
                 Ok(mut borrowed_queue) => borrowed_queue.pop(),
@@ -61,7 +54,8 @@ async fn main() -> Result<(), Error> {
 
             match retrieved_key {
                 Some(key) => {
-                    ProgrammableKeys::process_keys(key, &keymap).await;
+                    println!("Handling a keypress");
+                    ProgrammableKeys::process_keys(key, &keymap);
                 }
                 None => {}
             }

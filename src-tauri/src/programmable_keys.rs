@@ -1,8 +1,9 @@
+use std::cmp::PartialEq;
 use std::sync::{Arc, Mutex};
 use std::thread;
 use std::time::Duration;
 
-use rdev::{EventType, Key, simulate};
+use rdev::{simulate, EventType, Key};
 use serde::{Deserialize, Serialize};
 
 use crate::keymap::{Keymap, MacroAction, MacroKey};
@@ -131,9 +132,9 @@ pub enum ProgrammableKeys {
 }
 
 #[cfg(target_os = "windows")]
-#[derive(Debug, Serialize, Deserialize, FromPrimitive)]
+#[derive(Debug, Serialize, Deserialize, Clone, Eq, PartialEq, FromPrimitive)]
 pub enum ProgrammableKeys {
-    MACROUNKOWN = 0,
+    MACROUNKNOWN = 0,
     MACRO1 = 261,
     MACRO2 = 517,
     MACRO3 = 1029,
@@ -247,7 +248,7 @@ impl ProgrammableKeys {
         }
     }
 
-    pub async fn process_keys(key: ProgrammableKeys, keymap_arc: &Arc<Mutex<Keymap>>) {
+    pub fn process_keys(key: ProgrammableKeys, keymap_arc: &Arc<Mutex<Keymap>>) {
         let borrowed_map = match keymap_arc.lock() {
             Ok(keymap) => Some(keymap),
             Err(err) => {
