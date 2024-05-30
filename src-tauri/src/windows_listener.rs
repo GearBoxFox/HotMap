@@ -1,10 +1,10 @@
-use std::sync::Mutex;
-use winapi::shared::minwindef::{WPARAM, LPARAM, LRESULT, DWORD};
-use winapi::shared::windef::*;
-use winapi::um::winuser::*;
-use winapi::um::libloaderapi::GetModuleHandleW;
 use std::ptr::{self};
 use std::sync::Arc;
+use std::sync::Mutex;
+use winapi::shared::minwindef::{DWORD, LPARAM, LRESULT, WPARAM};
+use winapi::shared::windef::*;
+use winapi::um::libloaderapi::GetModuleHandleW;
+use winapi::um::winuser::*;
 
 use crate::programmable_keys::ProgrammableKeys;
 
@@ -17,28 +17,29 @@ macro_rules! native_str {
 }
 
 fn handle_hid(raw_input: &RAWINPUT) {
-    unsafe { 
+    unsafe {
         let raw_keyboard_input = raw_input.data.keyboard();
 
         // println!("flags {:?}, extra info {:?}, makeCoke {:?}, message {:?}" , raw_keyboard_input.Flags, raw_keyboard_input.ExtraInformation, raw_keyboard_input.MakeCode, raw_keyboard_input.Message);
 
-        if raw_keyboard_input.Flags == 0 && raw_keyboard_input.MakeCode == 5 && raw_keyboard_input.Message != 5 {
+        if raw_keyboard_input.Flags == 0
+            && raw_keyboard_input.MakeCode == 5
+            && raw_keyboard_input.Message != 5
+        {
             let prog_key = ProgrammableKeys::from_u32(raw_keyboard_input.Message);
             match prog_key {
                 ProgrammableKeys::MACROUNKNOWN => {
                     eprintln!("MACROUNKNOWN PRESSED");
-                },
+                }
                 _ => {
                     let queue_temp = KEY_QUEUE.clone();
-                    match queue_temp{
-                        Some(queue) => {
-                            match queue.lock() {
-                                Ok(mut borrowed_queue) => {
-                                    borrowed_queue.push(prog_key);
-                                },
-                                Err(e) => {
-                                    eprintln!("Error locking queue: {:?}", e);
-                                }
+                    match queue_temp {
+                        Some(queue) => match queue.lock() {
+                            Ok(mut borrowed_queue) => {
+                                borrowed_queue.push(prog_key);
+                            }
+                            Err(e) => {
+                                eprintln!("Error locking queue: {:?}", e);
                             }
                         },
                         None => {
@@ -67,17 +68,17 @@ unsafe extern "system" fn wnd_proc(
                 RID_INPUT,
                 &mut raw_input as *mut _ as *mut winapi::ctypes::c_void,
                 &mut dwsize as *mut _,
-               std::mem::size_of::<RAWINPUTHEADER>() as u32
+                std::mem::size_of::<RAWINPUTHEADER>() as u32,
             );
 
             handle_hid(&raw_input);
 
             0
-        },
+        }
         _ => {
             println!("Unknown message: {}", msg);
             DefWindowProcW(hwnd, msg, w_param, l_param)
-        },
+        }
     }
 }
 
@@ -112,7 +113,8 @@ fn create_window() -> HWND {
             ptr::null_mut(),
             ptr::null_mut(),
             h_instance,
-            ptr::null_mut());
+            ptr::null_mut(),
+        );
 
         assert!(hwnd != ptr::null_mut());
 
@@ -122,48 +124,48 @@ fn create_window() -> HWND {
 
 fn attach(hwnd: HWND) {
     // let mouse = RAWINPUTDEVICE {
-	//     usUsagePage: 1,
-	//     usUsage: 2,	// Mice
-	//     dwFlags: RIDEV_INPUTSINK,
-	//     hwndTarget: hwnd,
+    //     usUsagePage: 1,
+    //     usUsage: 2,	// Mice
+    //     dwFlags: RIDEV_INPUTSINK,
+    //     hwndTarget: hwnd,
     // };
 
     // let keyboard = RAWINPUTDEVICE {
-	//     usUsagePage: 1,
-	//     usUsage: 6,	// Keyboards
-	//     dwFlags: RIDEV_INPUTSINK,
-	//     hwndTarget: hwnd,
+    //     usUsagePage: 1,
+    //     usUsage: 6,	// Keyboards
+    //     dwFlags: RIDEV_INPUTSINK,
+    //     hwndTarget: hwnd,
     // };
 
     // https://learn.microsoft.com/en-us/windows/win32/inputdev/using-raw-input
 
     // let hid = RAWINPUTDEVICE {
-	//     usUsagePage: 0x0B, 
-	//     usUsage: 0x7,
-	//     dwFlags: GIDC_ARRIVAL,
-	//     hwndTarget: hwnd,
+    //     usUsagePage: 0x0B,
+    //     usUsage: 0x7,
+    //     dwFlags: GIDC_ARRIVAL,
+    //     hwndTarget: hwnd,
     // };
 
     let hid = RAWINPUTDEVICE {
-	    usUsagePage: 0x000C, 
-	    usUsage: 0x0001,
-	    dwFlags: RIDEV_INPUTSINK,
-	    hwndTarget: hwnd,
+        usUsagePage: 0x000C,
+        usUsage: 0x0001,
+        dwFlags: RIDEV_INPUTSINK,
+        hwndTarget: hwnd,
     };
 
-    unsafe { 
+    unsafe {
         RegisterRawInputDevices(&hid, 1, std::mem::size_of::<RAWINPUTDEVICE>() as u32);
     }
 }
 
 fn message_loop(hwnd: HWND) {
     let mut msg = MSG {
-        hwnd : hwnd,
-        message : 0 as u32,
-        wParam : 0 as WPARAM,
-        lParam : 0 as LPARAM,
-        time : 0 as DWORD,
-        pt : POINT { x: 0, y: 0, },
+        hwnd: hwnd,
+        message: 0 as u32,
+        wParam: 0 as WPARAM,
+        lParam: 0 as LPARAM,
+        time: 0 as DWORD,
+        pt: POINT { x: 0, y: 0 },
     };
     unsafe {
         while GetMessageW(&mut msg, hwnd as HWND, WM_INPUT, WM_INPUT) == 1 {
@@ -172,15 +174,15 @@ fn message_loop(hwnd: HWND) {
         CloseWindow(hwnd);
     }
 }
- 
-static mut KEY_QUEUE: Option<Arc<Mutex<Vec<ProgrammableKeys>>>> = None; 
 
-pub fn windows_start(queue: &Arc<Mutex<Vec<ProgrammableKeys>>>){
+static mut KEY_QUEUE: Option<Arc<Mutex<Vec<ProgrammableKeys>>>> = None;
+
+pub fn windows_start(queue: &Arc<Mutex<Vec<ProgrammableKeys>>>) {
     let temp = queue.clone();
     unsafe {
         KEY_QUEUE = Some(temp);
     }
     let hwnd = create_window();
     attach(hwnd);
-    message_loop(hwnd);   
+    message_loop(hwnd);
 }

@@ -1,4 +1,3 @@
-use std::{thread, time};
 use std::fs::{File, OpenOptions};
 use std::os::unix::{
     fs::OpenOptionsExt,
@@ -6,10 +5,11 @@ use std::os::unix::{
 };
 use std::path::Path;
 use std::sync::{Arc, Mutex};
+use std::{thread, time};
 
-use input::{Event, Libinput, LibinputInterface};
 use input::event::keyboard::KeyboardEventTrait;
 use input::event::KeyboardEvent;
+use input::{Event, Libinput, LibinputInterface};
 use libc::{O_RDONLY, O_RDWR, O_WRONLY};
 
 use crate::programmable_keys::ProgrammableKeys;

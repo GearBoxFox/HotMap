@@ -104,19 +104,17 @@ impl Keymap {
 
         // create the path to keymap json file in the appdata directory
         let mut keymap_path = path::local_data_dir().unwrap();
-
-        keymap_path.extend(["keymaps"]);
+        let binding = keymap.map_name.to_string().add(".json");
+        let file_name = binding.as_str();
+        keymap_path.extend(["hotmap", "keymaps"]);
 
         if !keymap_path.exists() {
             std::fs::create_dir_all(&keymap_path)?;
         }
 
-        let mut keymap_file = OpenOptions::new()
-            .write(true)
-            .create(true)
-            .truncate(true)
-            .open(keymap_path.with_file_name(keymap.map_name.to_string().add(".json").as_str()))
-            .unwrap();
+        keymap_path.push(file_name);
+
+        let mut keymap_file = File::create(keymap_path)?;
 
         match keymap_file.write_all(
             serde_json::to_string(&keymap.clone())
