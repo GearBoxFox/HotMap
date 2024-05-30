@@ -66,7 +66,10 @@ impl Keymap {
 
     /// Load a keymap json file into a Keymap struct, returning an error
     /// if no file is found.
-    pub fn load_from_file(keymap_name: String, keymap: &mut Arc<Mutex<Keymap>>) -> Result<(), io::Error> {
+    pub fn load_from_file(
+        keymap_name: String,
+        keymap: &mut Arc<Mutex<Keymap>>,
+    ) -> Result<(), io::Error> {
         // create the path to keymap json file in the appdata directory
         let mut keymap_path = path::local_data_dir().unwrap();
         let binding = keymap_name.to_string().add(".json");
@@ -92,7 +95,10 @@ impl Keymap {
             Ok(borrowed_keymap) => borrowed_keymap,
             Err(err) => {
                 eprintln!("Failed to establish lock on keymap to load from file!");
-                return Err(Error::new(ErrorKind::PermissionDenied, "Could not establish lock!"));
+                return Err(Error::new(
+                    ErrorKind::PermissionDenied,
+                    "Could not establish lock!",
+                ));
             }
         };
 
@@ -107,10 +113,7 @@ impl Keymap {
     }
 
     /// Saves a Keymap struct to a json file
-    pub fn save_to_file(
-        keymap_arc: Arc<Mutex<Keymap>>,
-        app_config: &Config,
-    ) -> Result<(), io::Error> {
+    pub fn save_to_file(keymap_arc: Arc<Mutex<Keymap>>) -> Result<(), io::Error> {
         // establish a lock on the keymap while reading
         let keymap = match keymap_arc.lock() {
             Ok(keymap) => keymap,
