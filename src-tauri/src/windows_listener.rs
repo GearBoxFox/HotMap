@@ -6,7 +6,7 @@ use winapi::um::libloaderapi::GetModuleHandleW;
 use std::ptr::{self};
 use std::sync::Arc;
 
-use crate::programmable_keys::programmable_keys::ProgrammableKeys;
+use crate::programmable_keys::ProgrammableKeys;
 
 #[macro_export]
 /// Convert regular expression to a native string, to be passable as an argument in WinAPI
@@ -20,14 +20,13 @@ fn handle_hid(raw_input: &RAWINPUT) {
     unsafe { 
         let raw_keyboard_input = raw_input.data.keyboard();
 
-        println!("flags {:?}, extra info {:?}, makeCoke {:?}, message {:?}" , raw_keyboard_input.Flags, raw_keyboard_input.ExtraInformation, raw_keyboard_input.MakeCode, raw_keyboard_input.Message);
+        // println!("flags {:?}, extra info {:?}, makeCoke {:?}, message {:?}" , raw_keyboard_input.Flags, raw_keyboard_input.ExtraInformation, raw_keyboard_input.MakeCode, raw_keyboard_input.Message);
 
         if raw_keyboard_input.Flags == 0 && raw_keyboard_input.MakeCode == 5 && raw_keyboard_input.Message != 5 {
             let prog_key = ProgrammableKeys::from_u32(raw_keyboard_input.Message);
-            println!("Raw Key: {}", raw_keyboard_input.Message);
             match prog_key {
-                ProgrammableKeys::MACROUNKOWN => {
-                    eprintln!("MACROUNKOWN PRESSED");
+                ProgrammableKeys::MACROUNKNOWN => {
+                    eprintln!("MACROUNKNOWN PRESSED");
                 },
                 _ => {
                     let queue_temp = KEY_QUEUE.clone();

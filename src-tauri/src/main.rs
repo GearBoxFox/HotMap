@@ -6,7 +6,7 @@ extern crate num_derive;
 
 use std::io::Error;
 use std::sync::{Arc, Mutex};
-use std::time;
+use std::{thread, time};
 
 use rdev::Key;
 use tauri::{CustomMenuItem, SystemTrayMenu, SystemTrayMenuItem};
@@ -47,9 +47,10 @@ async fn main() -> Result<(), Error> {
     let programmable_keys_arc = Arc::new(Mutex::new(programmable_keys_vec));
 
     let queue = programmable_keys_arc.clone();
-    tokio::spawn(async move {
+    thread::spawn(move || {
+        println!("started handler thread");
         loop {
-            tokio::time::sleep(QUEUE_CHECKING_DELAY).await;
+            thread::sleep(QUEUE_CHECKING_DELAY);
 
             let retrieved_key = match queue.lock() {
                 Ok(mut borrowed_queue) => borrowed_queue.pop(),
@@ -61,7 +62,8 @@ async fn main() -> Result<(), Error> {
 
             match retrieved_key {
                 Some(key) => {
-                    ProgrammableKeys::process_keys(key, &keymap).await;
+                    println!("Handling a keypress");
+                    ProgrammableKeys::process_keys(key, &keymap);
                 }
                 None => {}
             }
