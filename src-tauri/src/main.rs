@@ -29,17 +29,9 @@ mod windows_listener;
 #[tokio::main(flavor = "multi_thread", worker_threads = 1)]
 async fn main() -> Result<(), Error> {
     // Create dummy keymap
-    let keymap: Arc<Mutex<Keymap>> = Arc::new(Mutex::new(Keymap {
-        map_name: "testkeymap".to_string(),
-        button_count: 1,
-        buttons: vec![MacroKey {
-            programmable_key: ProgrammableKeys::MACRO1,
-            macro_type: MacroType::Once,
-            actions: vec![MacroAction::Tap(Key::Num1)],
-        }],
-    }));
+    let keymap: Arc<Mutex<Keymap>> = Arc::new(Mutex::new(Keymap::new(String::from("Test"), 1)));
 
-    Keymap::save_to_file(keymap.clone(), &tauri::Config::default())
+    Keymap::load_from_file(String::from("testkeymap"), &mut keymap.clone())
         .expect("Failed to save keymap!");
 
     // Handle keyboard presses
