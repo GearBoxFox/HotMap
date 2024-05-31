@@ -1,5 +1,3 @@
-import {invoke} from ""
-
 let keybindingDiv
 let keybindingDivCollapse
 
