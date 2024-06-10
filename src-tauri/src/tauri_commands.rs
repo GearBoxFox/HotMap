@@ -1,6 +1,6 @@
 use std::sync::{Arc, Mutex};
 
-use crate::keymap::Keymap;
+use crate::keymap::{Keymap, MacroKey};
 
 #[tauri::command]
 pub fn send_keymap(state: tauri::State<Arc<Mutex<Keymap>>>) -> Keymap {
@@ -16,4 +16,16 @@ pub fn send_keymap(state: tauri::State<Arc<Mutex<Keymap>>>) -> Keymap {
         buttons: keymap_clone.buttons.clone(),
         button_count: keymap_clone.button_count,
     }
+}
+
+#[tauri::command]
+pub fn add_button(button: MacroKey, state: tauri::State<Arc<Mutex<Keymap>>>) {
+    let keymap_clone = match state.lock() {
+        Ok(keymap) => keymap,
+        Err(_) => {
+            panic!("Failed to acquire keymap lock")
+        }
+    };
+
+    keymap_clone.buttons.push(button);
 }
