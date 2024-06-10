@@ -22,17 +22,14 @@ const QUEUE_CHECKING_DELAY: time::Duration = time::Duration::from_millis(20);
 #[cfg(target_os = "linux")]
 mod linux_listener;
 
+mod tauri_commands;
 #[cfg(target_os = "windows")]
 mod windows_listener;
-mod tauri_commands;
 
 #[tokio::main(flavor = "multi_thread", worker_threads = 1)]
 async fn main() -> Result<(), Error> {
     // Create dummy keymap
     let keymap: Arc<Mutex<Keymap>> = Arc::new(Mutex::new(Keymap::new(String::from("Test"), 1)));
-
-    Keymap::load_from_file(String::from("testkeymap"), &mut keymap.clone())
-        .expect("Failed to save keymap!");
 
     // Handle keyboard presses
     let programmable_keys_vec: Vec<ProgrammableKeys> = Vec::new();
