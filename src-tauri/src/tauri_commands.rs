@@ -20,7 +20,7 @@ pub fn send_keymap(state: tauri::State<Arc<Mutex<Keymap>>>) -> Keymap {
 
 #[tauri::command]
 pub fn add_button(button: MacroKey, state: tauri::State<Arc<Mutex<Keymap>>>) {
-    let keymap_clone = match state.lock() {
+    let mut keymap_clone = match state.lock() {
         Ok(keymap) => keymap,
         Err(_) => {
             panic!("Failed to acquire keymap lock")

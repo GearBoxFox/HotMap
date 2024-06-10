@@ -94,7 +94,7 @@ fn handle_macro_key(macro_key: MacroKey) {
 
 // https://docs.qmk.fm/#/feature_programmable_button
 #[cfg(target_os = "linux")]
-#[derive(Debug, Serialize, Deserialize, Clone, Eq, PartialEq, FromPrimitive)]
+#[derive(Debug, Serialize, Deserialize, Clone, Eq, PartialEq)]
 pub enum ProgrammableKeys {
     MACROUNKNOWN = 0,
     MACRO1 = 656,
@@ -132,7 +132,7 @@ pub enum ProgrammableKeys {
 }
 
 #[cfg(target_os = "windows")]
-#[derive(Debug, Serialize, Deserialize, Clone, Eq, PartialEq, FromPrimitive)]
+#[derive(Debug, Serialize, Deserialize, Clone, Eq, PartialEq)]
 pub enum ProgrammableKeys {
     MACROUNKNOWN = 0,
     MACRO1 = 261,

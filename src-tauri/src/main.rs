@@ -1,9 +1,6 @@
 // Prevents additional console window on Windows in release, DO NOT REMOVE!!
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
-#[macro_use]
-extern crate num_derive;
-
 use std::{thread, time};
 use std::io::Error;
 use std::sync::{Arc, Mutex};
@@ -27,8 +24,7 @@ mod linux_listener;
 #[cfg(target_os = "windows")]
 mod windows_listener;
 
-#[tokio::main(flavor = "multi_thread", worker_threads = 1)]
-async fn main() -> Result<(), Error> {
+fn main() -> Result<(), Error> {
     // Create dummy keymap
     let keymap: Keymap = Keymap::new(String::from("Test"), 3);
     let keymap_arc: Arc<Mutex<Keymap>> = Arc::new(Mutex::new(keymap.clone()));
@@ -62,7 +58,7 @@ async fn main() -> Result<(), Error> {
         }
     });
 
-    tokio::spawn(async move {
+    thread::spawn(move || {
         #[cfg(target_os = "linux")]
         linux_listener::linux_start(&programmable_keys_arc);
 

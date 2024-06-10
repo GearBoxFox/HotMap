@@ -91,7 +91,7 @@ impl Keymap {
 
         let mut borrowed_keymap = match keymap.lock() {
             Ok(borrowed_keymap) => borrowed_keymap,
-            Err(err) => {
+            Err(_err) => {
                 eprintln!("Failed to establish lock on keymap to load from file!");
                 return Err(Error::new(
                     ErrorKind::PermissionDenied,
