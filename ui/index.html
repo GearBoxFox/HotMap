@@ -10,9 +10,6 @@
     <title>Document</title>
 </head>
 <body>
-<script crossorigin="anonymous" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
-        src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-<script src="src/index.ts" type="module"></script>
 <div class="container-flex">
     <!-- Header -->
     <div class="row bg-primary">
@@ -37,11 +34,8 @@
     </div>
     <div class="row">
         <!-- Key List -->
-        <div class="list-group col flex-column" style="padding-left: 10px; margin: 5px 5px 5px 5px;">
-            <a class="list-group-item list-group-item-action" href="#" onclick="collapseClick()">Click me to
-                collapse!</a>
-            <a class="list-group-item list-group-item-action" href="#">A list element</a>
-            <a class="list-group-item list-group-item-action" href="#">A list element</a>
+        <div class="list-group col flex-column" id="buttonContainer"
+             style="padding-left: 10px; margin: 5px 5px 5px 5px;">
         </div>
         <!-- Collapsable keybinding -->
         <div class="col flex-column collapse" id="collapseWidthExample">
@@ -49,5 +43,8 @@
         </div>
     </div>
 </div>
+<script crossorigin="anonymous" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+        src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="src/index.ts" type="module"></script>
 </body>
 </html>

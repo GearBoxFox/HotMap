@@ -3,10 +3,17 @@ use std::sync::{Arc, Mutex};
 use crate::keymap::Keymap;
 
 #[tauri::command]
-fn send_keymap(keymap: Arc<Mutex<Keymap>>) -> Keymap {
-    let borrowed_keymap = match keymap.lock() {
+pub fn send_keymap(state: tauri::State<Arc<Mutex<Keymap>>>) -> Keymap {
+    let keymap_clone = match state.lock() {
         Ok(keymap) => keymap,
-        Err(err) => panic!("Could acquire lock on keymap, error: {}", err.to_string())
+        Err(_) => {
+            panic!("Failed to acquire keymap lock")
+        }
     };
-    borrowed_keymap.to_owned()
+
+    Keymap {
+        map_name: keymap_clone.map_name.clone(),
+        buttons: keymap_clone.buttons.clone(),
+        button_count: keymap_clone.button_count,
+    }
 }

@@ -1,14 +1,12 @@
-use std::fs::{File, OpenOptions};
+use std::fs::File;
 use std::io;
 use std::io::{Error, ErrorKind, Read, Write};
 use std::ops::Add;
-use std::sync::{Arc, LockResult, Mutex};
+use std::sync::{Arc, Mutex};
 
-use num_traits::FromPrimitive;
 use rdev::Key;
 use serde::{Deserialize, Serialize};
 use tauri::api::path;
-use tauri::Config;
 
 use crate::programmable_keys::ProgrammableKeys;
 
@@ -49,9 +47,9 @@ impl Keymap {
         let mut blank_buttons: Vec<MacroKey> = Vec::new();
 
         // Fill a blank vec of macros, incrementing for each new button
-        for i in 0..count {
+        for i in 1..count + 1 {
             blank_buttons.push(MacroKey {
-                programmable_key: FromPrimitive::from_i32(i).unwrap(),
+                programmable_key: ProgrammableKeys::get_from_index(i),
                 macro_type: MacroType::Once,
                 actions: vec![MacroAction::None],
             })

@@ -13,29 +13,32 @@ use tauri::{Manager, SystemTray, SystemTrayEvent};
 
 use crate::keymap::Keymap;
 use crate::programmable_keys::ProgrammableKeys;
+use crate::tauri_commands::send_keymap;
 
 mod keymap;
 mod programmable_keys;
+mod tauri_commands;
 
 const QUEUE_CHECKING_DELAY: time::Duration = time::Duration::from_millis(20);
 
 #[cfg(target_os = "linux")]
 mod linux_listener;
 
-mod tauri_commands;
 #[cfg(target_os = "windows")]
 mod windows_listener;
 
 #[tokio::main(flavor = "multi_thread", worker_threads = 1)]
 async fn main() -> Result<(), Error> {
     // Create dummy keymap
-    let keymap: Arc<Mutex<Keymap>> = Arc::new(Mutex::new(Keymap::new(String::from("Test"), 1)));
+    let keymap: Keymap = Keymap::new(String::from("Test"), 3);
+    let keymap_arc: Arc<Mutex<Keymap>> = Arc::new(Mutex::new(keymap.clone()));
 
     // Handle keyboard presses
     let programmable_keys_vec: Vec<ProgrammableKeys> = Vec::new();
     let programmable_keys_arc = Arc::new(Mutex::new(programmable_keys_vec));
 
     let queue = programmable_keys_arc.clone();
+    let keymap_clone = keymap_arc.clone();
     thread::spawn(move || {
         println!("started handler thread");
         loop {
@@ -52,7 +55,7 @@ async fn main() -> Result<(), Error> {
             match retrieved_key {
                 Some(key) => {
                     println!("Handling a keypress");
-                    ProgrammableKeys::process_keys(key, &keymap);
+                    ProgrammableKeys::process_keys(key, &keymap_clone);
                 }
                 None => {}
             }
@@ -79,6 +82,7 @@ async fn main() -> Result<(), Error> {
     let tray = SystemTray::new().with_menu(tray_menu);
 
     tauri::Builder::default()
+        .manage(keymap_arc)
         .system_tray(tray)
         .on_system_tray_event(|app, event| match event {
             SystemTrayEvent::MenuItemClick { id, .. } => match id.as_str() {
@@ -104,6 +108,7 @@ async fn main() -> Result<(), Error> {
             }
             _ => {}
         })
+        .invoke_handler(tauri::generate_handler![send_keymap])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 

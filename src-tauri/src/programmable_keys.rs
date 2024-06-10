@@ -3,7 +3,7 @@ use std::sync::{Arc, Mutex};
 use std::thread;
 use std::time::Duration;
 
-use rdev::{simulate, EventType, Key};
+use rdev::{EventType, Key, simulate};
 use serde::{Deserialize, Serialize};
 
 use crate::keymap::{Keymap, MacroAction, MacroKey};
@@ -244,6 +244,44 @@ impl ProgrammableKeys {
             217 => ProgrammableKeys::MACRO30,
             218 => ProgrammableKeys::MACRO31,
             219 => ProgrammableKeys::MACRO32,
+            _ => ProgrammableKeys::MACROUNKNOWN,
+        }
+    }
+
+    pub fn get_from_index(index: i32) -> ProgrammableKeys {
+        match index {
+            1 => ProgrammableKeys::MACRO1,
+            2 => ProgrammableKeys::MACRO2,
+            3 => ProgrammableKeys::MACRO3,
+            4 => ProgrammableKeys::MACRO4,
+            5 => ProgrammableKeys::MACRO5,
+            6 => ProgrammableKeys::MACRO6,
+            7 => ProgrammableKeys::MACRO7,
+            8 => ProgrammableKeys::MACRO8,
+            9 => ProgrammableKeys::MACRO9,
+            10 => ProgrammableKeys::MACRO10,
+            11 => ProgrammableKeys::MACRO11,
+            12 => ProgrammableKeys::MACRO12,
+            13 => ProgrammableKeys::MACRO13,
+            14 => ProgrammableKeys::MACRO14,
+            15 => ProgrammableKeys::MACRO15,
+            16 => ProgrammableKeys::MACRO16,
+            17 => ProgrammableKeys::MACRO17,
+            18 => ProgrammableKeys::MACRO18,
+            19 => ProgrammableKeys::MACRO19,
+            20 => ProgrammableKeys::MACRO20,
+            21 => ProgrammableKeys::MACRO21,
+            22 => ProgrammableKeys::MACRO22,
+            23 => ProgrammableKeys::MACRO23,
+            24 => ProgrammableKeys::MACRO24,
+            25 => ProgrammableKeys::MACRO25,
+            26 => ProgrammableKeys::MACRO26,
+            27 => ProgrammableKeys::MACRO27,
+            28 => ProgrammableKeys::MACRO28,
+            29 => ProgrammableKeys::MACRO29,
+            30 => ProgrammableKeys::MACRO30,
+            31 => ProgrammableKeys::MACRO31,
+            32 => ProgrammableKeys::MACRO32,
             _ => ProgrammableKeys::MACROUNKNOWN,
         }
     }
