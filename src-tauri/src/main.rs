@@ -2,7 +2,6 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
 use std::{thread, time};
-use std::io::Error;
 use std::sync::{Arc, Mutex};
 
 use tauri::{CustomMenuItem, SystemTrayMenu, SystemTrayMenuItem};
@@ -10,7 +9,7 @@ use tauri::{Manager, SystemTray, SystemTrayEvent};
 
 use crate::keymap::Keymap;
 use crate::programmable_keys::ProgrammableKeys;
-use crate::tauri_commands::send_keymap;
+use crate::tauri_commands::{add_button, send_keymap};
 
 mod keymap;
 mod programmable_keys;
@@ -24,7 +23,7 @@ mod linux_listener;
 #[cfg(target_os = "windows")]
 mod windows_listener;
 
-fn main() -> Result<(), Error> {
+fn main() {
     // Create dummy keymap
     let keymap: Keymap = Keymap::new(String::from("Test"), 3);
     let keymap_arc: Arc<Mutex<Keymap>> = Arc::new(Mutex::new(keymap.clone()));
@@ -97,6 +96,16 @@ fn main() -> Result<(), Error> {
             },
             _ => {}
         })
+        .setup(|app| {
+            // Event listeners for reloading the keymap on frontend
+            let id = app.listen_global("reload-keymap", |event| {
+                println!("got event-name with payload {:?}", event.payload());
+            });
+
+            app.emit_all("load-keymap", "").unwrap();
+
+            Ok(())
+        })
         .on_window_event(|event| match event.event() {
             tauri::WindowEvent::CloseRequested { api, .. } => {
                 event.window().hide().unwrap();
@@ -104,9 +113,14 @@ fn main() -> Result<(), Error> {
             }
             _ => {}
         })
-        .invoke_handler(tauri::generate_handler![send_keymap])
-        .run(tauri::generate_context!())
-        .expect("error while running tauri application");
-
-    Ok(())
+        .invoke_handler(tauri::generate_handler![send_keymap, add_button])
+        .build(tauri::generate_context!())
+        .expect("error while running tauri application")
+        .run(|_app_handle, event| match event {
+            tauri::RunEvent::Ready {} => _app_handle.emit_all("load-keymap", "").unwrap(),
+            tauri::RunEvent::ExitRequested { api, .. } => {
+                api.prevent_exit();
+            }
+            _ => {}
+        });
 }

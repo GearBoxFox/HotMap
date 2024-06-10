@@ -27,5 +27,6 @@ pub fn add_button(button: MacroKey, state: tauri::State<Arc<Mutex<Keymap>>>) {
         }
     };
 
+    keymap_clone.button_count += 1;
     keymap_clone.buttons.push(button);
 }
