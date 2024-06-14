@@ -4,10 +4,11 @@
 use std::{thread, time};
 use std::sync::{Arc, Mutex};
 
+use rdev::Key;
 use tauri::{CustomMenuItem, SystemTrayMenu, SystemTrayMenuItem};
 use tauri::{Manager, SystemTray, SystemTrayEvent};
 
-use crate::keymap::Keymap;
+use crate::keymap::{Keymap, MacroAction, MacroKey, MacroType};
 use crate::programmable_keys::ProgrammableKeys;
 use crate::tauri_commands::{add_button, send_keymap};
 
@@ -25,7 +26,23 @@ mod windows_listener;
 
 fn main() {
     // Create dummy keymap
-    let keymap: Keymap = Keymap::new(String::from("Test"), 3);
+    let keymap: Keymap = Keymap {
+        map_name: "Test Map".to_string(),
+        button_count: 1,
+        buttons: vec![MacroKey {
+            programmable_key: ProgrammableKeys::MACRO1,
+            macro_type: MacroType::Once,
+            actions: vec![
+                MacroAction::None,
+                MacroAction::Delay(1),
+                MacroAction::Tap(Key::Backspace),
+                MacroAction::Press(Key::KeyA),
+                MacroAction::Release(Key::KeyA),
+                MacroAction::Print("Hello, world!".to_string()),
+            ],
+        }],
+    };
+
     let keymap_arc: Arc<Mutex<Keymap>> = Arc::new(Mutex::new(keymap.clone()));
 
     // Handle keyboard presses

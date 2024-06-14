@@ -32,14 +32,21 @@
             </ul>
         </div>
     </div>
-    <div class="row">
+    <div class="row h-auto overflow-scroll" style="max-height:40%">
         <!-- Key List -->
         <div class="list-group col flex-column" id="buttonContainer"
              style="padding-left: 10px; margin: 5px 5px 5px 5px;">
         </div>
-        <!-- Collapsable keybinding -->
-        <div class="col flex-column collapse" id="collapseWidthExample">
-            hello!
+    </div>
+    <!-- Collapsable keybinding -->
+    <div class="row h-50 collapse-horizontal border" id="collapseWidthExample">
+        <div class="col">
+            <div class="list-group" id="currentMacroActions">
+                hello!
+            </div>
+        </div>
+        <div class="col" id="addMacroActions">
+            I'm the second side!
         </div>
     </div>
 </div>
