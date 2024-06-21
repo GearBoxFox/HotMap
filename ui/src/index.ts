@@ -64,6 +64,7 @@ let populateKeymapButtons = async () => {
 let openConfigPanel = (index: number) => {
     console.log(index);
 
+    // manages the display for the current macro actions
     // close if last clicked button
     if (index == prevIndex) {
         keybindingDivCollapse.hide();
@@ -82,43 +83,53 @@ let openConfigPanel = (index: number) => {
     let actionsDiv = document.getElementById("currentMacroActions")!;
     actionsDiv.innerHTML = '';
 
+    // For each action
     for (let x = 0; x < button.actions.length; x++) {
         let actionType = button.actions[x];
-        let newAction: HTMLElement;
+        let newAction = document.createElement("label");
+        let newDiv = document.createElement("div");
 
-        console.log(actionType)
+        newDiv.className = "list-group-item";
+        newAction.className = "bold"
 
+        // check action type
         if (actionType == "None") {
-            newAction = document.createElement("a");
-            newAction.textContent = "None"
-            newAction.className = "list-group-item"
-        }
-        if (actionType.hasOwnProperty("Delay")) {
-            newAction = document.createElement("a");
-            newAction.textContent = "Delay: " + actionType.Delay + " ms"
-            newAction.className = "list-group-item"
-        }
-        if (actionType.hasOwnProperty("Tap")) {
-            newAction = document.createElement("a");
-            newAction.textContent = "Tap: " + actionType.Tap
-            newAction.className = "list-group-item"
-        }
-        if (actionType.hasOwnProperty("Press")) {
-            newAction = document.createElement("a");
+            newAction.textContent = "None";
+            newDiv.append(newAction);
+        } else if (actionType.hasOwnProperty("Delay")) {
+            newAction.textContent = "Delay: " + actionType.Delay + " ms";
+            newDiv.append(newAction);
+        } else if (actionType.hasOwnProperty("Tap")) {
+            newAction.textContent = "Tap: ";
+            let selector = document.createElement("select");
+
+            let option = document.createElement("option");
+            option.value = "1";
+            option.textContent = "Option 1";
+
+            selector.className = "macro-select";
+            selector.options.add(option);
+
+            newDiv.append(newAction, selector);
+        } else if (actionType.hasOwnProperty("Press")) {
             newAction.textContent = "Press: " + actionType.Press
-            newAction.className = "list-group-item"
-        }
-        if (actionType.hasOwnProperty("Release")) {
-            newAction = document.createElement("a");
+            newDiv.append(newAction);
+        } else if (actionType.hasOwnProperty("Release")) {
             newAction.textContent = "Release: " + actionType.Release
-            newAction.className = "list-group-item"
-        }
-        if (actionType.hasOwnProperty("Print")) {
-            newAction = document.createElement("a");
+            newDiv.append(newAction);
+        } else if (actionType.hasOwnProperty("Print")) {
             newAction.textContent = "Print: " + actionType.Print
-            newAction.className = "list-group-item"
+            newDiv.append(newAction);
+        } else {
+            newAction.textContent = "Unknown Action"
+            newDiv.append(newAction);
         }
 
-        actionsDiv.append(newAction);
+        actionsDiv.append(newDiv);
     }
+}
+
+// method to add a macro action to the keybind
+let addMacroAction = () => {
+    
 }
