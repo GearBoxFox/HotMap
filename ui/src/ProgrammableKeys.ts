@@ -144,3 +144,20 @@ export enum Keys {
     Function,
     Unknown
 }
+
+export let createKeySelectorTemplate = () => {
+    let keySelectorTemplate: HTMLSelectElement = document.createElement('select');
+
+    // 105 is the number of elements in the 'Keys' enum
+    // this is a crappy way of getting this, but TS has no better option
+    for (let i = 0; i < 105; i++) {
+        let option: HTMLOptionElement = document.createElement('option');
+        option.value = Keys[i];
+        option.textContent = Keys[i];
+
+        keySelectorTemplate.options.add(option);
+    }
+
+    console.log(keySelectorTemplate.innerHTML)
+    return keySelectorTemplate;
+}

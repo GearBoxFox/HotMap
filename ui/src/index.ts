@@ -1,6 +1,6 @@
 import {Collapse} from "bootstrap";
 import {invoke} from "@tauri-apps/api";
-import {Keys} from "./ProgrammableKeys";
+import {createKeySelectorTemplate, Keys} from "./ProgrammableKeys";
 
 let keybindingDiv
 let keybindingDivCollapse: Collapse
@@ -110,14 +110,9 @@ let openConfigPanel = (index: number) => {
             newDiv.append(newAction);
         } else if (actionType.hasOwnProperty("Tap")) {
             newAction.textContent = "Tap: ";
-            let selector = document.createElement("select");
-
-            let option = document.createElement("option");
-            option.value = "1";
-            option.textContent = "Option 1";
+            let selector = createKeySelectorTemplate();
 
             selector.className = "macro-select";
-            selector.options.add(option);
 
             newDiv.append(newAction, selector);
         } else if (actionType.hasOwnProperty("Press")) {
