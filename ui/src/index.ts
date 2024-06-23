@@ -1,6 +1,6 @@
 import {Collapse} from "bootstrap";
 import {invoke} from "@tauri-apps/api";
-import {createKeySelectorTemplate, Keys} from "./ProgrammableKeys";
+import {createKeySelectorTemplate, Keys, sortedArray} from "./ProgrammableKeys";
 
 let keybindingDiv
 let keybindingDivCollapse: Collapse
@@ -111,10 +111,10 @@ let openConfigPanel = (index: number) => {
         } else if (actionType.hasOwnProperty("Tap")) {
             newAction.textContent = "Tap: ";
             let selector = createKeySelectorTemplate();
-            selector.selectedIndex = Object.values(Keys).indexOf(actionType.Tap);
-            selector.addEventListener("change", () => {
+            selector.selectedIndex = Object.values(sortedArray).indexOf(actionType.Tap);
 
-            })
+            // when selected element changes, update the keymap
+            selector.addEventListener("change", () => updateMacroAction(x, selector))
 
             selector.className = "macro-select form-select";
 
@@ -261,10 +261,15 @@ let addMacroAction = (buttonClicked: HTMLButtonElement) => {
     }
 }
 
-// let updateMacroAction = (index: number, root: HTMLSelectElement | HTMLInputElement) {
-//     if (prevIndex != null) {
-//         if (root instanceof HTMLSelectElement) {
-//             keymap.buttons[prevIndex].actions[index].key = root.selectedOptions.item(0).value
-//         }
-//     }
-// }
+let updateMacroAction = (index: number, root: HTMLSelectElement | HTMLInputElement) => {
+    if (prevIndex != null) {
+        console.log(keymap.buttons[prevIndex].actions[index]);
+
+        if (root instanceof HTMLSelectElement) {
+            console.log(root.selectedOptions.item(0)!.value);
+            keymap.buttons[prevIndex].actions[index].Tap = root.selectedOptions.item(0)!.value;
+        }
+
+        console.log(keymap.buttons[prevIndex].actions[index]);
+    }
+}
