@@ -10,6 +10,11 @@
 .macro-select {
     margin-left: 10px;
     margin-right: 10px;
+    display: inline-block;
+    padding: 1px 1px 1px 1px;
+    width: auto;
+    min-width: 50%;
+    max-width: 60%;
 }
 
 .macro-edit {

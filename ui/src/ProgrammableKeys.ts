@@ -36,7 +36,6 @@ export enum MacroKeys {
 export enum Keys {
     /// Alt key on Linux and Windows (option key on macOS)
     Alt,
-    AltGr,
     Backspace,
     CapsLock,
     ControlLeft,
@@ -51,6 +50,7 @@ export enum Keys {
     F12,
     F2,
     F3,
+    KeyA,
     F4,
     F5,
     F6,
@@ -58,10 +58,10 @@ export enum Keys {
     F8,
     F9,
     Home,
+    /// also known as "windows", "super", and "command"
     LeftArrow,
     /// also known as "windows", "super", and "command"
     MetaLeft,
-    /// also known as "windows", "super", and "command"
     MetaRight,
     PageDown,
     PageUp,
@@ -101,7 +101,6 @@ export enum Keys {
     KeyP,
     LeftBracket,
     RightBracket,
-    KeyA,
     KeyS,
     KeyD,
     KeyF,
@@ -147,13 +146,40 @@ export enum Keys {
 
 export let createKeySelectorTemplate = () => {
     let keySelectorTemplate: HTMLSelectElement = document.createElement('select');
+    // copy to temp array to sort
 
-    // 105 is the number of elements in the 'Keys' enum
+    // @ts-ignore
+    let tempArray: [string] = [];
+
+    // 104 is the number of elements in the 'Keys' enum
     // this is a crappy way of getting this, but TS has no better option
-    for (let i = 0; i < 105; i++) {
+    for (let i = 0; i < 104; i++) {
+
+        // format out any unused whitespaces
+        let text = Keys[i];
+        if (text.startsWith("Key")) {
+            text = text.replace("Key", "Key ");
+        } else if (text.startsWith("Kp")) {
+            text = text.replace("Kp", "Keypad ")
+        } else if (text.startsWith("Control")) {
+            text = text.replace("Control", "Control ");
+        } else if (text.startsWith("Meta")) {
+            text = text.replace("Meta", "Meta ");
+        } else if (text.startsWith("Page")) {
+            text = text.replace("Page", "Page ");
+        } else if (text.startsWith("Shift")) {
+            text = text.replace("Shift", "Shift ");
+        }
+
+        tempArray.push(text);
+    }
+
+    tempArray.sort();
+
+    for (let i = 0; i < tempArray.length; i++) {
         let option: HTMLOptionElement = document.createElement('option');
         option.value = Keys[i];
-        option.textContent = Keys[i];
+        option.textContent = tempArray[i];
 
         keySelectorTemplate.options.add(option);
     }

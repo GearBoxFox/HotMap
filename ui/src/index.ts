@@ -112,7 +112,7 @@ let openConfigPanel = (index: number) => {
             newAction.textContent = "Tap: ";
             let selector = createKeySelectorTemplate();
 
-            selector.className = "macro-select";
+            selector.className = "macro-select form-select";
 
             newDiv.append(newAction, selector);
         } else if (actionType.hasOwnProperty("Press")) {
