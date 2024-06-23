@@ -7,21 +7,18 @@
 
 }
 
-.macro-current:hover {
-    background-color: #888888;
-}
-
 .macro-select {
     margin-left: 10px;
     margin-right: 10px;
 }
 
 .macro-remove {
-    visibility: hidden;
+    visibility: visible;
 }
 
-a:hover + .macro-remove, .macro-remove:hover {
+.macro-remove:hover {
     visibility: visible;
+    background-color: #cdcbcb;
 }
 
 .macro-add {

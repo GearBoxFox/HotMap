@@ -98,6 +98,7 @@ let openConfigPanel = (index: number) => {
         let newDiv = document.createElement("div");
 
         newDiv.className = "list-group-item macro-current";
+        newDiv.id = String(x);
         newAction.className = "bold"
 
         // check action type
@@ -133,9 +134,10 @@ let openConfigPanel = (index: number) => {
             newDiv.append(newAction);
         }
 
-        let removeButton = document.createElement('svg');
-        removeButton. = "/assets/icons/-.svg"
-        removeButton.className = "macro-remove"
+        let removeButton = document.createElement('img');
+        removeButton.src = "../assets/bootstrap-icons-1.11.3/dash-lg.svg"
+        removeButton.className = "macro-remove float-end rounded"
+
         newDiv.append(removeButton);
 
         console.log(newDiv.innerHTML);
@@ -144,8 +146,11 @@ let openConfigPanel = (index: number) => {
     }
 }
 
+let removeMacro = ()
+
 // method to add a macro action to the keybind
-export let addMacroAction = (buttonClicked: HTMLButtonElement) => {
+let addMacroAction = (buttonClicked: HTMLButtonElement) => {
+    // gets the currently active button
     if (prevIndex != null) {
         let button = keymap.buttons[prevIndex]!;
 
