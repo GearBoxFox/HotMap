@@ -138,15 +138,42 @@ let openConfigPanel = (index: number) => {
         removeButton.src = "../assets/bootstrap-icons-1.11.3/dash-lg.svg"
         removeButton.className = "macro-remove float-end rounded"
 
-        newDiv.append(removeButton);
+        removeButton.addEventListener("click", () => {
+            removeMacro(x);
+        })
 
-        console.log(newDiv.innerHTML);
+        newDiv.append(removeButton);
 
         actionsDiv.append(newDiv);
     }
 }
 
-let removeMacro = ()
+let removeMacro = (index: number) => {
+    // check if a macro button is open
+    if (prevIndex != null) {
+        let tempArray: any = [];
+
+        // copy each action into a temp variable, expect for the specified index
+        for (let i = 0; i < keymap.buttons[prevIndex].actions.length - 1; i++) {
+            if (i < index) {
+                tempArray.push(keymap.buttons[prevIndex].actions[i]);
+            } else {
+                tempArray.push(keymap.buttons[prevIndex].actions[i + 1]);
+            }
+        }
+
+        // copy temp array into keymap
+        keymap.buttons[prevIndex].actions = tempArray;
+
+        console.log(keymap.actions);
+        console.log(tempArray);
+
+        // reload macrobutton page
+        let tempIndex = prevIndex;
+        prevIndex = null;
+        openConfigPanel(tempIndex);
+    }
+}
 
 // method to add a macro action to the keybind
 let addMacroAction = (buttonClicked: HTMLButtonElement) => {
