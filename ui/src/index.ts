@@ -111,6 +111,10 @@ let openConfigPanel = (index: number) => {
         } else if (actionType.hasOwnProperty("Tap")) {
             newAction.textContent = "Tap: ";
             let selector = createKeySelectorTemplate();
+            selector.selectedIndex = Object.values(Keys).indexOf(actionType.Tap);
+            selector.addEventListener("change", () => {
+
+            })
 
             selector.className = "macro-select form-select";
 
@@ -129,6 +133,8 @@ let openConfigPanel = (index: number) => {
             newDiv.append(newAction);
         }
 
+
+        // add remove and reorder buttons
         let editDiv = document.createElement('div');
         editDiv.className = "float-end"
 
@@ -150,6 +156,7 @@ let openConfigPanel = (index: number) => {
 
         removeButton.addEventListener("mouseup", () => removeMacro(x));
 
+        // add all new items to a div
         editDiv.append(upButton);
         editDiv.append(downButton);
         editDiv.append(removeButton);
@@ -253,3 +260,11 @@ let addMacroAction = (buttonClicked: HTMLButtonElement) => {
         openConfigPanel(temp);
     }
 }
+
+// let updateMacroAction = (index: number, root: HTMLSelectElement | HTMLInputElement) {
+//     if (prevIndex != null) {
+//         if (root instanceof HTMLSelectElement) {
+//             keymap.buttons[prevIndex].actions[index].key = root.selectedOptions.item(0).value
+//         }
+//     }
+// }

@@ -184,6 +184,5 @@ export let createKeySelectorTemplate = () => {
         keySelectorTemplate.options.add(option);
     }
 
-    console.log(keySelectorTemplate.innerHTML)
     return keySelectorTemplate;
 }
