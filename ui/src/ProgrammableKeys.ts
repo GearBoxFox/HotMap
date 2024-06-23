@@ -148,24 +148,9 @@ export let sortedArray: any = [];
 
 // 104 is the number of elements in the 'Keys' enum
 // this is a crappy way of getting this, but TS has no better option
+// copy over each element to sort
 for (let i = 0; i < 104; i++) {
-
-    // format out any unused whitespaces
     let text = Keys[i];
-    if (text.startsWith("Key")) {
-        text = text.replace("Key", "Key ");
-    } else if (text.startsWith("Kp")) {
-        text = text.replace("Kp", "Keypad ")
-    } else if (text.startsWith("Control")) {
-        text = text.replace("Control", "Control ");
-    } else if (text.startsWith("Meta")) {
-        text = text.replace("Meta", "Meta ");
-    } else if (text.startsWith("Page")) {
-        text = text.replace("Page", "Page ");
-    } else if (text.startsWith("Shift")) {
-        text = text.replace("Shift", "Shift ");
-    }
-
     sortedArray.push(text);
 }
 
@@ -173,11 +158,33 @@ sortedArray.sort();
 
 export let createKeySelectorTemplate = () => {
     let keySelectorTemplate: HTMLSelectElement = document.createElement('select');
+    let tempArray: any = [];
 
-    for (let i = 0; i < sortedArray.length; i++) {
+    for (let i = 0; i < 104; i++) {
+
+        // format out any unused whitespaces
+        let text = sortedArray[i];
+        if (text.startsWith("Key")) {
+            text = text.replace("Key", "Key ");
+        } else if (text.startsWith("Kp")) {
+            text = text.replace("Kp", "Keypad ")
+        } else if (text.startsWith("Control")) {
+            text = text.replace("Control", "Control ");
+        } else if (text.startsWith("Meta")) {
+            text = text.replace("Meta", "Meta ");
+        } else if (text.startsWith("Page")) {
+            text = text.replace("Page", "Page ");
+        } else if (text.startsWith("Shift")) {
+            text = text.replace("Shift", "Shift ");
+        }
+
+        tempArray.push(text);
+    }
+
+    for (let i = 0; i < tempArray.length; i++) {
         let option: HTMLOptionElement = document.createElement('option');
-        option.value = sortedArray[i];
-        option.textContent = sortedArray[i];
+        option.value = tempArray[i];
+        option.textContent = tempArray[i];
 
         keySelectorTemplate.options.add(option);
     }

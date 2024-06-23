@@ -6,6 +6,8 @@ let keybindingDiv
 let keybindingDivCollapse: Collapse
 let keymap: any = null;
 let prevIndex: number | null = null;
+let dirty: boolean = false;
+let secondOpen: boolean = false;
 
 document.addEventListener("DOMContentLoaded", () => {
     keybindingDiv = document.getElementById("collapseWidthExample") as HTMLElement;
@@ -75,7 +77,12 @@ let openConfigPanel = (index: number) => {
     // manages the display for the current macro actions
     // close if last clicked button
     if (index == prevIndex) {
-        keybindingDivCollapse.hide();
+        // check if there are unsaved changes
+        if (dirty && !secondOpen) {
+
+        } else {
+            keybindingDivCollapse.hide();
+        }
         // set to null so button can open again
         prevIndex = null;
         return;
@@ -120,11 +127,27 @@ let openConfigPanel = (index: number) => {
 
             newDiv.append(newAction, selector);
         } else if (actionType.hasOwnProperty("Press")) {
-            newAction.textContent = "Press: " + actionType.Press
-            newDiv.append(newAction);
+            newAction.textContent = "Press: ";
+            let selector = createKeySelectorTemplate();
+            selector.selectedIndex = Object.values(sortedArray).indexOf(actionType.Press);
+
+            // when selected element changes, update the keymap
+            selector.addEventListener("change", () => updateMacroAction(x, selector))
+
+            selector.className = "macro-select form-select";
+
+            newDiv.append(newAction, selector);
         } else if (actionType.hasOwnProperty("Release")) {
-            newAction.textContent = "Release: " + actionType.Release
-            newDiv.append(newAction);
+            newAction.textContent = "Release: ";
+            let selector = createKeySelectorTemplate();
+            selector.selectedIndex = Object.values(sortedArray).indexOf(actionType.Release);
+
+            // when selected element changes, update the keymap
+            selector.addEventListener("change", () => updateMacroAction(x, selector))
+
+            selector.className = "macro-select form-select";
+
+            newDiv.append(newAction, selector);
         } else if (actionType.hasOwnProperty("Print")) {
             newAction.textContent = "Print: " + actionType.Print
             newDiv.append(newAction);
@@ -184,6 +207,9 @@ let removeMacro = (index: number) => {
         // copy temp array into keymap
         keymap.buttons[prevIndex].actions = tempArray;
 
+        // set 'dirty' aka made changes
+        dirty = true;
+
         // reload macrobutton page
         let tempIndex = prevIndex;
         prevIndex = null;
@@ -194,6 +220,9 @@ let removeMacro = (index: number) => {
 let reorderMacro = (startIndex: number, up: boolean) => {
     // check if a macro button is open
     if (prevIndex != null) {
+        // check if trying to move the last action down
+        if (startIndex == keymap.buttons[prevIndex].actions.length - 1 && !up) return;
+
         let tempArray = [];
 
         // copy each action into a temp variable, expect for the specified index
@@ -219,6 +248,9 @@ let reorderMacro = (startIndex: number, up: boolean) => {
 
         // copy temp array into keymap
         keymap.buttons[prevIndex].actions = tempArray;
+
+        // set 'dirty' aka made changes
+        dirty = true;
 
         // reload macrobutton page
         let tempIndex = prevIndex;
@@ -254,6 +286,9 @@ let addMacroAction = (buttonClicked: HTMLButtonElement) => {
                 button.actions.push("None");
         }
 
+        // set 'dirty' aka made changes
+        dirty = true;
+
         // reload visual
         let temp = prevIndex;
         prevIndex = null
@@ -263,13 +298,20 @@ let addMacroAction = (buttonClicked: HTMLButtonElement) => {
 
 let updateMacroAction = (index: number, root: HTMLSelectElement | HTMLInputElement) => {
     if (prevIndex != null) {
-        console.log(keymap.buttons[prevIndex].actions[index]);
-
         if (root instanceof HTMLSelectElement) {
-            console.log(root.selectedOptions.item(0)!.value);
-            keymap.buttons[prevIndex].actions[index].Tap = root.selectedOptions.item(0)!.value;
+            let action = keymap.buttons[prevIndex].actions[index];
+
+            // check action type and update accordingly
+            if (action.hasOwnProperty("Tap")) {
+                action.Tap = root.selectedOptions.item(0)!.value;
+            } else if (action.hasOwnProperty("Press")) {
+                action.Press = root.selectedOptions.item(0)!.value;
+            } else if (action.hasOwnProperty("Release")) {
+                action.Release = root.selectedOptions.item(0)!.value;
+            }
         }
 
-        console.log(keymap.buttons[prevIndex].actions[index]);
+        // set 'dirty' aka made changes
+        dirty = true;
     }
 }
