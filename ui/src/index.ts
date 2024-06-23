@@ -97,7 +97,7 @@ let openConfigPanel = (index: number) => {
         let newAction = document.createElement("label");
         let newDiv = document.createElement("div");
 
-        newDiv.className = "list-group-item";
+        newDiv.className = "list-group-item macro-current";
         newAction.className = "bold"
 
         // check action type
@@ -132,6 +132,13 @@ let openConfigPanel = (index: number) => {
             newAction.textContent = "Unknown Action"
             newDiv.append(newAction);
         }
+
+        let removeButton = document.createElement('svg');
+        removeButton. = "/assets/icons/-.svg"
+        removeButton.className = "macro-remove"
+        newDiv.append(removeButton);
+
+        console.log(newDiv.innerHTML);
 
         actionsDiv.append(newDiv);
     }

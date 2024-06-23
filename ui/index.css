@@ -3,11 +3,25 @@
     margin-right: 10px;
 }
 
+.macro-current {
+
+}
+
+.macro-current:hover {
+    background-color: #888888;
+}
+
 .macro-select {
-    margin: 10px;
-    border-style: solid;
-    border-width: 1px;
-    min-width: 20%;
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+.macro-remove {
+    visibility: hidden;
+}
+
+a:hover + .macro-remove, .macro-remove:hover {
+    visibility: visible;
 }
 
 .macro-add {
