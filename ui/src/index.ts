@@ -1,5 +1,7 @@
 import {Collapse} from "bootstrap";
 import {invoke} from "@tauri-apps/api";
+import {MacroAction} from "./MacroTypes";
+import {Keys} from "./ProgrammableKeys";
 
 let keybindingDiv
 let keybindingDivCollapse: Collapse
@@ -11,6 +13,14 @@ document.addEventListener("DOMContentLoaded", () => {
     keybindingDivCollapse = new Collapse(keybindingDiv);
     populateKeymapButtons().then();
     keybindingDivCollapse.hide();
+
+    // populate events for adding macro buttons
+    let addButtons = document.querySelectorAll("button.macro-add");
+
+    for (let i = 0; i < addButtons.length; i++) {
+        let button = addButtons.item(i)! as HTMLButtonElement;
+        button.addEventListener("click", () => addMacroAction(button));
+    }
 })
 
 let populateKeymapButtons = async () => {
@@ -62,8 +72,6 @@ let populateKeymapButtons = async () => {
 }
 
 let openConfigPanel = (index: number) => {
-    console.log(index);
-
     // manages the display for the current macro actions
     // close if last clicked button
     if (index == prevIndex) {
@@ -130,6 +138,46 @@ let openConfigPanel = (index: number) => {
 }
 
 // method to add a macro action to the keybind
-let addMacroAction = () => {
-    
+export let addMacroAction = (buttonClicked: HTMLButtonElement) => {
+    if (prevIndex != null) {
+        let macroAction: {
+            action: MacroAction,
+            key: Keys | string | number | null
+        };
+
+        switch (buttonClicked.id) {
+            case "Delay":
+                macroAction = {action: MacroAction.Delay, key: 1.0};
+                break;
+            case "Tap":
+                macroAction = {action: MacroAction.Tap, key: Keys.KeyA};
+                break;
+            case "Press":
+                macroAction = {action: MacroAction.Press, key: Keys.KeyA};
+                break;
+            case "Release":
+                macroAction = {action: MacroAction.Release, key: Keys.KeyA};
+                break;
+            case "Print":
+                macroAction = {action: MacroAction.Print, key: "Hello, world!"};
+                break;
+            default:
+                macroAction = {action: MacroAction.None, key: null};
+        }
+
+        let button = keymap.buttons[prevIndex]!;
+
+        if (macroAction.action == MacroAction.None) {
+            console.log("Adding 'None' action");
+            button.actions.push("None");
+        } else if (macroAction.action == MacroAction.Delay) {
+            button.actions.append({Delay: macroAction.key})
+        }
+
+        console.log(button.actions);
+
+        let temp = prevIndex;
+        prevIndex = null
+        openConfigPanel(temp);
+    }
 }
