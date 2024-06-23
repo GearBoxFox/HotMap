@@ -12,11 +12,11 @@
     margin-right: 10px;
 }
 
-.macro-remove {
+.macro-edit {
     visibility: visible;
 }
 
-.macro-remove:hover {
+.macro-edit:hover {
     visibility: visible;
     background-color: #cdcbcb;
 }

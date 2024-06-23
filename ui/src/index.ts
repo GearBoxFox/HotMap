@@ -99,7 +99,7 @@ let openConfigPanel = (index: number) => {
 
         newDiv.className = "list-group-item macro-current";
         newDiv.id = String(x);
-        newAction.className = "bold"
+        newAction.className = "fw-bold text-capitalize fs-6"
 
         // check action type
         if (actionType == "None") {
@@ -134,15 +134,32 @@ let openConfigPanel = (index: number) => {
             newDiv.append(newAction);
         }
 
+        let editDiv = document.createElement('div');
+        editDiv.className = "float-end"
+
+        let upButton = document.createElement('img');
+        upButton.src = "../assets/bootstrap-icons-1.11.3/caret-up.svg";
+        upButton.className = "macro-edit rounded";
+
+        upButton.addEventListener("click", () => reorderMacro(x, true));
+
+        let downButton = document.createElement('img');
+        downButton.src = "../assets/bootstrap-icons-1.11.3/caret-down.svg";
+        downButton.className = "macro-edit rounded";
+
+        downButton.addEventListener("click", () => reorderMacro(x, false));
+
         let removeButton = document.createElement('img');
-        removeButton.src = "../assets/bootstrap-icons-1.11.3/dash-lg.svg"
-        removeButton.className = "macro-remove float-end rounded"
+        removeButton.src = "../assets/bootstrap-icons-1.11.3/dash-lg.svg";
+        removeButton.className = "macro-edit rounded";
 
-        removeButton.addEventListener("click", () => {
-            removeMacro(x);
-        })
+        removeButton.addEventListener("mouseup", () => removeMacro(x));
 
-        newDiv.append(removeButton);
+        editDiv.append(upButton);
+        editDiv.append(downButton);
+        editDiv.append(removeButton);
+
+        newDiv.append(editDiv)
 
         actionsDiv.append(newDiv);
     }
@@ -165,8 +182,41 @@ let removeMacro = (index: number) => {
         // copy temp array into keymap
         keymap.buttons[prevIndex].actions = tempArray;
 
-        console.log(keymap.actions);
-        console.log(tempArray);
+        // reload macrobutton page
+        let tempIndex = prevIndex;
+        prevIndex = null;
+        openConfigPanel(tempIndex);
+    }
+}
+
+let reorderMacro = (startIndex: number, up: boolean) => {
+    // check if a macro button is open
+    if (prevIndex != null) {
+        let tempArray = [];
+
+        // copy each action into a temp variable, expect for the specified index
+        for (let i = 0; i < keymap.buttons[prevIndex].actions.length; i++) {
+            console.log(i);
+            // if moving up and we're at the action above
+            if (i == startIndex - 1 && up) {
+                // copy our moving action first, then increment i again
+                tempArray.push(keymap.buttons[prevIndex].actions[startIndex]);
+                tempArray.push(keymap.buttons[prevIndex].actions[i]);
+                i++;
+            } else if (i == startIndex && !up) {
+                // if moving down, copy our the action below first, then increment i again
+                tempArray.push(keymap.buttons[prevIndex].actions[startIndex + 1]);
+                tempArray.push(keymap.buttons[prevIndex].actions[startIndex]);
+                i++;
+            } else {
+                tempArray.push(keymap.buttons[prevIndex].actions[i]);
+            }
+        }
+
+        console.log("End of loop")
+
+        // copy temp array into keymap
+        keymap.buttons[prevIndex].actions = tempArray;
 
         // reload macrobutton page
         let tempIndex = prevIndex;
