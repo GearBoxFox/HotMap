@@ -52,8 +52,8 @@ let populateKeymapButtons = async () => {
         buttonContainer.innerHTML = '';
 
         // loop through each saved macro and display it
-        for (let x = 0; x < result.button_count; x++) {
-            let button = result.buttons[x];
+        for (let x = 0; x < keymap.button_count; x++) {
+            let button = keymap.buttons[x];
             let editButton = document.createElement("a");
             editButton.className = "list-group-item list-group-item-action";
             editButton.id = "button" + x;
@@ -76,7 +76,7 @@ let populateKeymapButtons = async () => {
             invoke("add_button",
                 {
                     button: {
-                        programmable_key: "MACRO" + (Number)(result.button_count + 1),
+                        programmable_key: "MACRO" + (Number)(keymap.button_count + 1),
                         macro_type: "Once",
                         actions: ["None"]
                     }

@@ -19,7 +19,7 @@
     "tauri": "tauri",
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "vite serve ./ui",
-    "build": "tsc && vite build",
+    "build": "tsc && vite build ./ui",
     "preview": "vite preview"
   },
   "repository": {
@@ -34,6 +34,7 @@
   "homepage": "https://github.com/GearBoxFox/HotMap#readme",
   "dependencies": {
     "@popperjs/core": "^2.11.8",
+    "@types/node": "^20.14.8",
     "boostrap": "^2.0.0",
     "bootstrap": "^5.3.3",
     "bootstrap-icons": "^1.11.3"
