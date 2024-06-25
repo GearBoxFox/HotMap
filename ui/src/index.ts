@@ -30,10 +30,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // add save button event listeners
     document.getElementById("save-btn")!.addEventListener("click", () => {
-        console.log(keymap);
         dirty = false;
         secondOpen = false;
         invoke("save_keymap", {keymap: keymap}).then();
+    })
+
+    document.getElementById("save-btn-modal")!.addEventListener("click", () => {
+        dirty = false;
+        secondOpen = false;
+        invoke("save_keymap", {keymap: keymap}).then(() => keybindingDivCollapse.hide());
     })
 })
 
@@ -93,7 +98,6 @@ let openConfigPanel = (index: number) => {
         // check if there are unsaved changes
         if (dirty && !secondOpen) {
             secondOpen = true;
-            console.log("Opening the modal")
             saveAlertModal.show();
             return;
         } else {
@@ -112,7 +116,6 @@ let openConfigPanel = (index: number) => {
 
     // copy current macro actions
     let button = keymap.buttons[index];
-    // console.log(button);
     let actionsDiv = document.getElementById("currentMacroActions")!;
     actionsDiv.innerHTML = '';
 
@@ -245,7 +248,6 @@ let reorderMacro = (startIndex: number, up: boolean) => {
 
         // copy each action into a temp variable, expect for the specified index
         for (let i = 0; i < keymap.buttons[prevIndex].actions.length; i++) {
-            console.log(i);
             // if moving up and we're at the action above
             if (i == startIndex - 1 && up) {
                 // copy our moving action first, then increment i again
@@ -261,8 +263,6 @@ let reorderMacro = (startIndex: number, up: boolean) => {
                 tempArray.push(keymap.buttons[prevIndex].actions[i]);
             }
         }
-
-        console.log("End of loop")
 
         // copy temp array into keymap
         keymap.buttons[prevIndex].actions = tempArray;
