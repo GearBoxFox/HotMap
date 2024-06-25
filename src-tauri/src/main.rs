@@ -10,7 +10,7 @@ use tauri::{Manager, SystemTray, SystemTrayEvent};
 
 use crate::keymap::{Keymap, MacroAction, MacroKey, MacroType};
 use crate::programmable_keys::ProgrammableKeys;
-use crate::tauri_commands::{add_button, send_keymap};
+use crate::tauri_commands::{add_button, save_keymap, send_keymap};
 
 mod keymap;
 mod programmable_keys;
@@ -130,7 +130,11 @@ fn main() {
             }
             _ => {}
         })
-        .invoke_handler(tauri::generate_handler![send_keymap, add_button])
+        .invoke_handler(tauri::generate_handler![
+            send_keymap,
+            add_button,
+            save_keymap
+        ])
         .build(tauri::generate_context!())
         .expect("error while running tauri application")
         .run(|_app_handle, event| match event {

@@ -27,6 +27,14 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     keybindingDivCollapse.hide();
+
+    // add save button event listeners
+    document.getElementById("save-btn")!.addEventListener("click", () => {
+        console.log(keymap);
+        dirty = false;
+        secondOpen = false;
+        invoke("save_keymap", {keymap: keymap}).then();
+    })
 })
 
 let populateKeymapButtons = async () => {
@@ -78,7 +86,6 @@ let populateKeymapButtons = async () => {
 }
 
 let openConfigPanel = (index: number) => {
-    populateKeymapButtons().then();
 
     // manages the display for the current macro actions
     // close if last clicked button
@@ -90,6 +97,7 @@ let openConfigPanel = (index: number) => {
             saveAlertModal.show();
             return;
         } else {
+            populateKeymapButtons().then();
             secondOpen = false;
             keybindingDivCollapse.hide();
         }

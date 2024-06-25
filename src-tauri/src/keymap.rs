@@ -111,16 +111,8 @@ impl Keymap {
     }
 
     /// Saves a Keymap struct to a json file
-    pub fn save_to_file(keymap_arc: Arc<Mutex<Keymap>>) -> Result<(), io::Error> {
+    pub fn save_to_file(keymap: Keymap) -> Result<(), io::Error> {
         // establish a lock on the keymap while reading
-        let keymap = match keymap_arc.lock() {
-            Ok(keymap) => keymap,
-            Err(err) => {
-                eprintln!("Failed to establish lock on keymap file to save: {}", err);
-                return Err(io::Error::new(ErrorKind::PermissionDenied, err.to_string()));
-            }
-        };
-
         // create the path to keymap json file in the appdata directory
         let mut keymap_path = path::local_data_dir().unwrap();
         let binding = keymap.map_name.to_string().add(".json");
