@@ -78,6 +78,8 @@ let populateKeymapButtons = async () => {
 }
 
 let openConfigPanel = (index: number) => {
+    populateKeymapButtons().then();
+
     // manages the display for the current macro actions
     // close if last clicked button
     if (index == prevIndex) {
@@ -86,6 +88,7 @@ let openConfigPanel = (index: number) => {
             secondOpen = true;
             console.log("Opening the modal")
             saveAlertModal.show();
+            return;
         } else {
             secondOpen = false;
             keybindingDivCollapse.hide();
