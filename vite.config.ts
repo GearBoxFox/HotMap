@@ -1,4 +1,5 @@
 import {defineConfig} from "vite";
+import {resolve} from "path";
 
 // https://vitejs.dev/config/
 export default defineConfig(async () => ({
@@ -16,4 +17,12 @@ export default defineConfig(async () => ({
             ignored: ["**/src-tauri/**"],
         },
     },
+
+    build: {
+        rollupOptions: {
+            input: {
+                main: resolve(__dirname, './ui/index.html'),
+            },
+        },
+    }
 }));
