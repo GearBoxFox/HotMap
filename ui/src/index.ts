@@ -1,4 +1,4 @@
-import {Collapse} from "bootstrap";
+import {Collapse, Modal} from "bootstrap";
 import {invoke} from "@tauri-apps/api";
 import {createKeySelectorTemplate, Keys, sortedArray} from "./ProgrammableKeys";
 
@@ -9,10 +9,14 @@ let prevIndex: number | null = null;
 let dirty: boolean = false;
 let secondOpen: boolean = false;
 
+let saveAlertModal: Modal;
+
 document.addEventListener("DOMContentLoaded", () => {
     keybindingDiv = document.getElementById("collapseWidthExample") as HTMLElement;
     keybindingDivCollapse = new Collapse(keybindingDiv);
     populateKeymapButtons().then();
+
+    saveAlertModal = new Modal(document.getElementById('save-alert')!, {backdrop: true});
     // populate events for adding macro buttons
 
     let addButtons = document.querySelectorAll("button.macro-add");
@@ -79,8 +83,11 @@ let openConfigPanel = (index: number) => {
     if (index == prevIndex) {
         // check if there are unsaved changes
         if (dirty && !secondOpen) {
-
+            secondOpen = true;
+            console.log("Opening the modal")
+            saveAlertModal.show();
         } else {
+            secondOpen = false;
             keybindingDivCollapse.hide();
         }
         // set to null so button can open again
