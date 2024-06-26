@@ -66,7 +66,7 @@ let populateKeymapButtons = async () => {
 
         // add a new macro button
         let addButton = document.createElement("a");
-        addButton.className = "list-group-item list-group-item-action content-box";
+        addButton.className = "list-group-item list-group-item-action content-box-rounded";
         addButton.textContent = "+"
 
         addButton.addEventListener("click", () => {

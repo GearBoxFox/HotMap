@@ -24,6 +24,14 @@ body {
     color: var(--color-text);
 }
 
+.content-box-rounded {
+    border: var(--color-border) 2px solid;
+    background: var(--color-bg);
+    color: var(--color-text);
+    border-radius: 2px;
+    font-size: large;
+}
+
 .header {
     background: var(--color-primary);
 }

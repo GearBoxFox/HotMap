@@ -15,7 +15,7 @@
     <!-- Header -->
     <div class="row h-10 header">
         <div class="col">
-            <h1 class="h2 fw-bold position-relative top-50 translate-middle-y"
+            <h1 class="h2 fw-bold position-sticky top-50 translate-middle-y"
                 style="padding-left: 10px; color: var(--color-text)">HotMap</h1>
         </div>
         <!-- Dropdown -->
@@ -51,20 +51,20 @@
             </div>
         </div>
     </div>
-    <div class="row h-50 overflow-scroll content-box" id="buttonContainer" style="max-height:40%">
+    <div class="row h-50 overflow-scroll"  style="max-height:40%">
         <!-- Key List -->
-        <div class="list-group col flex-column"
+        <div class="list-group col flex-column" id="buttonContainer"
              style="padding-left: 10px; margin: 5px 5px 5px 5px;">
         </div>
     </div>
     <!-- Collapsable keybinding -->
-    <div class="row h-50 overflow-scroll border">
-        <div class="col" style="max-width: 50%">
-            <div class="list-group overflow-scroll" id="currentMacroActions">
+    <div class="row h-50 overflow-scroll border content-box">
+        <div class="col content-box" style="max-width: 50%">
+            <div class="list-group  h-100 overflow-scroll" id="currentMacroActions">
 
             </div>
         </div>
-        <div class="col col-lg-auto" id="addMacroActions">
+        <div class="col col-lg-auto content-box" id="addMacroActions">
             <div class="row" style="margin-top: 5px">
                 <div class="btn-group-vertical macro-add" role="group">
                     <button type="button" class="btn content-box macro-add" id="Tap">Tap</button>
