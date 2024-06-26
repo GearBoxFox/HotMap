@@ -28,6 +28,11 @@ body {
     color: var(--color-text);
 }
 
+.bg-darkmode {
+    background-color: var(--color-bg);
+    color: var(--color-text);
+}
+
 .content-box-rounded {
     border: var(--color-border) 2px solid;
     background: var(--color-bg);

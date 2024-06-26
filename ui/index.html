@@ -11,6 +11,19 @@
 </head>
 <body>
 <script src="src/index.ts" type="module"></script>
+<div class="toast-container position-fixed top-0 start-0 p-3">
+    <div id="saveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="toast-header bg-darkmode">
+            <img src="assets/bootstrap-icons-1.11.3/floppy.svg" class="rounded me-2" alt="...">
+            <strong class="me-auto">Save successful</strong>
+            <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+        <div class="toast-body bg-darkmode">
+            <small>You may now finish</small>
+        </div>
+    </div>
+</div>
+
 <div class="container-flex">
     <!-- Header -->
     <div class="row h-10 header">

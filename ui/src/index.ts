@@ -1,4 +1,4 @@
-import {Modal} from "bootstrap";
+import {Modal, Toast} from "bootstrap";
 import {invoke} from "@tauri-apps/api";
 import {createKeySelectorTemplate, Keys, sortedArray} from "./ProgrammableKeys";
 
@@ -33,14 +33,18 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("save-btn")!.addEventListener("click", () => {
         dirty = false;
         secondOpen = false;
-        invoke("save_keymap", {keymap: keymap}).then();
+        invoke("save_keymap", {keymap: keymap}).then(() => {
+            new Toast(document.getElementById("saveToast")!).show();
+        });
     });
 
     document.getElementById("save-btn-modal")!.addEventListener("click", () => {
         dirty = false;
         secondOpen = false;
         saveAlertModal.hide();
-        invoke("save_keymap", {keymap: keymap}).then();
+        invoke("save_keymap", {keymap: keymap}).then(() => {
+            new Toast(document.getElementById("saveToast")!).show();
+        });
     });
 
     // create button for dark mode toggle
