@@ -94,12 +94,10 @@ let openConfigPanel = (index: number) => {
     if (index != prevIndex && prevIndex != null) {
         // check if there are unsaved changes
         if (dirty && !secondOpen) {
-            console.log("Save alert")
             secondOpen = true;
             saveAlertModal.show();
             return;
         } else {
-            console.log("Changing current button")
             dirty = false;
             secondOpen = false;
             populateKeymapButtons();
@@ -111,13 +109,13 @@ let openConfigPanel = (index: number) => {
 
     prevIndex = index;
 
-    document.getElementById("button" + prevIndex)!.className =
-        document.getElementById("button" + prevIndex)!.className.concat(" macro-active");
-
     // copy current macro actions
     let button = keymap.buttons[index];
     let actionsDiv = document.getElementById("currentMacroActions")!;
     actionsDiv.innerHTML = '';
+
+    // label the currently active macro
+    document.getElementById("macroLabel")!.textContent = "Macro " + String(index + 1);
 
     // For each action
     for (let x = 0; x < button.actions.length; x++) {

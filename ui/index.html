@@ -18,19 +18,6 @@
             <h1 class="h2 fw-bold position-sticky top-50 translate-middle-y"
                 style="padding-left: 10px; color: var(--color-text)">HotMap</h1>
         </div>
-        <!-- Dropdown -->
-        <div class="col">
-            <div class="dropdown-center text-end">
-                <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                    Centered dropdown
-                </button>
-                <ul class="dropdown-menu">
-                    <li><a class="dropdown-item" href="#">Action</a></li>
-                    <li><a class="dropdown-item" href="#">Action two</a></li>
-                    <li><a class="dropdown-item" href="#">Action three</a></li>
-                </ul>
-            </div>
-        </div>
     </div>
     <!-- Save alert modal -->
     <div class="modal" id="save-alert" tabindex="-1">
@@ -57,15 +44,16 @@
         </div>
     </div>
     <!-- Collapsable keybinding -->
-    <div class="row h-50 overflow-scroll border content-box">
-        <div class="col content-box" style="max-width: 50%">
-            <div class="list-group  h-100 overflow-scroll" style="margin-top: 3px" id="currentMacroActions">
+    <div class="row h-50 border content-box">
+        <div class="col content-box overflow-scroll" style="max-width: 50%">
+            <h5 class="fw-bold text-center" id="macroLabel">Click a macro key to start editing.</h5>
+            <div class="list-group h-100 overflow-scroll" style="margin-top: 3px" id="currentMacroActions">
 
             </div>
         </div>
-        <div class="col col-lg-auto content-box" id="addMacroActions">
+        <div class="col content-box" id="addMacroActions">
             <div class="row" style="margin-top: 5px">
-                <div class="btn-group-vertical macro-add" role="group">
+                <div class="btn-group-vertical" role="group">
                     <button type="button" class="btn content-box macro-add" id="Tap">Tap</button>
                     <button type="button" class="btn content-box macro-add" id="Press">Press</button>
                     <button type="button" class="btn content-box macro-add" id="Release">Release</button>
