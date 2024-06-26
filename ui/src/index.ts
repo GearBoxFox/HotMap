@@ -41,7 +41,14 @@ document.addEventListener("DOMContentLoaded", () => {
         saveAlertModal.hide();
         invoke("save_keymap", {keymap: keymap}).then(() => keybindingDivCollapse.hide());
     });
+
+    // periodic loop to manage width
+    setInterval(() => {
+        if (keybindingDivCollapse.)
+    })
 })
+
+
 
 let populateKeymapButtons = async () => {
 
