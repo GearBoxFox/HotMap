@@ -1,26 +1,26 @@
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
     <meta charset="UTF-8"/>
-    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <meta content="width=device-width height=device-height initial-scale=1.0" name="viewport"/>
 
     <link crossorigin="anonymous" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
           integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" rel="stylesheet">
     <link href="index.css" rel="stylesheet">
 
-    <title>Document</title>
+    <title>Hotmap</title>
 </head>
 <body>
 <script src="src/index.ts" type="module"></script>
 <div class="container-flex">
     <!-- Header -->
-    <div class="row h-25 bg-primary">
+    <div class="row h-10 bg-primary">
         <div class="col">
-            <h1 class="h1 fw-bold position-relative top-50 translate-middle-y"
+            <h1 class="h2 fw-bold position-relative top-50 translate-middle-y"
                 style="padding-left: 10px">HotMap</h1>
         </div>
         <!-- Dropdown -->
         <div class="col dropdown-center text-end">
-            <button aria-expanded="false" class="btn btn-primary dropdown-toggle header-dropdown text-nowrap"
+            <button aria-expanded="false" class="btn h-auto dropdown-toggle header-dropdown text-nowrap"
                     data-bs-toggle="dropdown"
                     style="--bs-btn-padding-y: 1rem; --bs-btn-padding-x: 2rem; --bs-btn-font-size: 1.5rem"
                     type="button">
@@ -51,14 +51,14 @@
             </div>
         </div>
     </div>
-    <div class="row h-25 overflow-scroll" style="max-height:40%">
+    <div class="row h-25 overflow-scroll " style="max-height:40%">
         <!-- Key List -->
         <div class="list-group col flex-column" id="buttonContainer"
              style="padding-left: 10px; margin: 5px 5px 5px 5px;">
         </div>
     </div>
     <!-- Collapsable keybinding -->
-    <div class="row h-50 collapse-horizontal overflow-scroll border" id="collapseWidthExample">
+    <div class="row h-auto collapse-horizontal overflow-scroll border" id="collapseWidthExample">
         <div class="col">
             <div class="list-group overflow-scroll" id="currentMacroActions">
 

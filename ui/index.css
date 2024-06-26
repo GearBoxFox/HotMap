@@ -1,6 +1,42 @@
+[data-theme="light"] {
+    --color-primary: #285ae0;
+    --color-bg: #ffffff;
+    --color-border: #aaaaaa;
+}
+
+[data-theme="dark"] {
+    --color-primary: #7b049c;
+    --color-bg: #121212;
+    --color-border: #cccccc;
+}
+
+body {
+    background: var(--color-bg);
+}
+
+div {
+    background: var(--color-bg);
+}
+
+.header {
+    background: var(--color-primary);
+}
+
 .header-dropdown {
     border-style: hidden;
     margin-right: 10px;
+}
+
+.h-10 {
+    height: 10%;
+}
+
+::-webkit-scrollbar {
+    display: none;
+}
+
+.small-border {
+    border: 3px solid black;
 }
 
 .macro-current {

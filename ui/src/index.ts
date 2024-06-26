@@ -33,13 +33,14 @@ document.addEventListener("DOMContentLoaded", () => {
         dirty = false;
         secondOpen = false;
         invoke("save_keymap", {keymap: keymap}).then();
-    })
+    });
 
     document.getElementById("save-btn-modal")!.addEventListener("click", () => {
         dirty = false;
         secondOpen = false;
+        saveAlertModal.hide();
         invoke("save_keymap", {keymap: keymap}).then(() => keybindingDivCollapse.hide());
-    })
+    });
 })
 
 let populateKeymapButtons = async () => {
@@ -125,7 +126,7 @@ let openConfigPanel = (index: number) => {
         let newAction = document.createElement("label");
         let newDiv = document.createElement("div");
 
-        newDiv.className = "list-group-item macro-current";
+        newDiv.className = "list-group-item macro-current small-border";
         newDiv.id = String(x);
         newAction.className = "fw-bold text-capitalize fs-6"
 
