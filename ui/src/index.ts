@@ -9,8 +9,15 @@ let secondOpen: boolean = false;
 
 let saveAlertModal: Modal;
 
+const localStorageTheme = localStorage.getItem("theme");
+const systemSettingDark = window.matchMedia("(prefers-color-scheme: dark)");
+
+let currentThemeSetting: string;
+
+
 document.addEventListener("DOMContentLoaded", () => {
-    populateKeymapButtons().then();
+    currentThemeSetting = calculateSettingAsThemeString(localStorageTheme, systemSettingDark );
+    populateKeymapButtons();
 
     saveAlertModal = new Modal(document.getElementById('save-alert')!, {backdrop: true});
     // populate events for adding macro buttons
@@ -35,9 +42,53 @@ document.addEventListener("DOMContentLoaded", () => {
         saveAlertModal.hide();
         invoke("save_keymap", {keymap: keymap}).then();
     });
+
+    // create button for dark mode toggle
+    // target the button using the data attribute we added earlier
+    const button = document.querySelector("[data-theme-toggle]")! as HTMLElement;
+
+    button.addEventListener("click", () => {
+        const newTheme = currentThemeSetting === "dark" ? "light" : "dark";
+
+        // update the button text
+        const newCta = newTheme === "dark" ? "Change to light theme" : "Change to dark theme";
+
+        let newImg = document.createElement("img");
+        if (newTheme === "dark") {
+            newImg.src = "assets/bootstrap-icons-1.11.3/moon-stars.svg"
+        } else {
+            newImg.src = "assets/bootstrap-icons-1.11.3/sun.svg"
+        }
+        button.innerHTML = '';
+        button.append(newImg);
+
+        // use an aria-label if you are omitting text on the button
+        // and using sun/moon icons, for example
+        button.setAttribute("aria-label", newCta);
+
+        // update theme attribute on HTML to switch theme in CSS
+        document.querySelector("html")!.setAttribute("data-theme", newTheme);
+
+        // update in local storage
+        localStorage.setItem("theme", newTheme);
+
+        // update the currentThemeSetting in memory
+        currentThemeSetting = newTheme;
+    });
+
 })
 
+let calculateSettingAsThemeString = (localStorageTheme: string | null, systemSettingDark: MediaQueryList) =>{
+    if (localStorageTheme !== null) {
+        return localStorageTheme;
+    }
 
+    if (systemSettingDark.matches) {
+        return "dark";
+    }
+
+    return "light";
+}
 
 let populateKeymapButtons = () => {
 

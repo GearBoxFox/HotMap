@@ -3,7 +3,7 @@ use std::sync::{Arc, Mutex};
 use std::thread;
 use std::time::Duration;
 
-use rdev::{EventType, Key, simulate};
+use rdev::{simulate, EventType, Key};
 use serde::{Deserialize, Serialize};
 
 use crate::keymap::{Keymap, MacroAction, MacroKey};

@@ -1,5 +1,6 @@
 [data-theme="light"] {
     --color-primary: #2662ff;
+    --color-primary-dark: #2643ff;
     --color-bg: #ffffff;
     --color-bg-select: #eeeeee;
     --color-active: #bbbbbb;
@@ -9,6 +10,7 @@
 
 [data-theme="dark"] {
     --color-primary: #7b049c;
+    --color-primary-dark: #64049c;
     --color-bg: #121212;
     --color-bg-select: #232323;
     --color-active: #c539ec;
@@ -36,6 +38,17 @@ body {
 
 .header {
     background: var(--color-primary);
+    border: var(--color-primary);
+}
+
+.header-button {
+    background: var(--color-primary);
+    border: var(--color-primary);
+}
+
+.header-button:hover {
+    background: var(--color-primary-dark);
+    border: var(--color-primary-dark);
 }
 
 .header-dropdown {
