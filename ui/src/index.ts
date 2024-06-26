@@ -1,9 +1,7 @@
-import {Collapse, Modal} from "bootstrap";
+import {Modal} from "bootstrap";
 import {invoke} from "@tauri-apps/api";
 import {createKeySelectorTemplate, Keys, sortedArray} from "./ProgrammableKeys";
 
-let keybindingDiv
-let keybindingDivCollapse: Collapse
 let keymap: any = null;
 let prevIndex: number | null = null;
 let dirty: boolean = false;
@@ -12,8 +10,6 @@ let secondOpen: boolean = false;
 let saveAlertModal: Modal;
 
 document.addEventListener("DOMContentLoaded", () => {
-    keybindingDiv = document.getElementById("collapseWidthExample") as HTMLElement;
-    keybindingDivCollapse = new Collapse(keybindingDiv);
     populateKeymapButtons().then();
 
     saveAlertModal = new Modal(document.getElementById('save-alert')!, {backdrop: true});
@@ -26,8 +22,6 @@ document.addEventListener("DOMContentLoaded", () => {
         button.addEventListener("click", () => addMacroAction(button));
     }
 
-    keybindingDivCollapse.hide();
-
     // add save button event listeners
     document.getElementById("save-btn")!.addEventListener("click", () => {
         dirty = false;
@@ -39,13 +33,8 @@ document.addEventListener("DOMContentLoaded", () => {
         dirty = false;
         secondOpen = false;
         saveAlertModal.hide();
-        invoke("save_keymap", {keymap: keymap}).then(() => keybindingDivCollapse.hide());
+        invoke("save_keymap", {keymap: keymap}).then();
     });
-
-    // periodic loop to manage width
-    setInterval(() => {
-        if (keybindingDivCollapse.)
-    })
 })
 
 
@@ -111,7 +100,6 @@ let openConfigPanel = (index: number) => {
         } else {
             populateKeymapButtons().then();
             secondOpen = false;
-            keybindingDivCollapse.hide();
         }
         // set to null so button can open again
         prevIndex = null;
@@ -120,7 +108,6 @@ let openConfigPanel = (index: number) => {
 
     // open collapse div
     prevIndex = index;
-    keybindingDivCollapse.show();
 
     // copy current macro actions
     let button = keymap.buttons[index];
