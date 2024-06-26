@@ -19,18 +19,17 @@
                 style="padding-left: 10px; color: var(--color-text)">HotMap</h1>
         </div>
         <!-- Dropdown -->
-        <div class="col dropdown-center text-end">
-            <button aria-expanded="false" class="btn h-auto dropdown-toggle header-dropdown text-nowrap"
-                    data-bs-toggle="dropdown"
-                    style="--bs-btn-padding-y: 1rem; --bs-btn-padding-x: 2rem; --bs-btn-font-size: 1.5rem"
-                    type="button">
-                Dropdown button
-            </button>
-            <ul class="dropdown-menu">
-                <li><h6 class="dropdown-header">Dropdown header</h6></li>
-                <li><a class="dropdown-item" href="#">Action 1</a></li>
-                <li><a class="dropdown-item" href="#">Action 2</a></li>
-            </ul>
+        <div class="col">
+            <div class="dropdown-center text-end">
+                <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    Centered dropdown
+                </button>
+                <ul class="dropdown-menu">
+                    <li><a class="dropdown-item" href="#">Action</a></li>
+                    <li><a class="dropdown-item" href="#">Action two</a></li>
+                    <li><a class="dropdown-item" href="#">Action three</a></li>
+                </ul>
+            </div>
         </div>
     </div>
     <!-- Save alert modal -->
@@ -60,7 +59,7 @@
     <!-- Collapsable keybinding -->
     <div class="row h-50 overflow-scroll border content-box">
         <div class="col content-box" style="max-width: 50%">
-            <div class="list-group  h-100 overflow-scroll" id="currentMacroActions">
+            <div class="list-group  h-100 overflow-scroll" style="margin-top: 3px" id="currentMacroActions">
 
             </div>
         </div>

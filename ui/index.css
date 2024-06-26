@@ -2,6 +2,7 @@
     --color-primary: #2662ff;
     --color-bg: #ffffff;
     --color-bg-select: #eeeeee;
+    --color-active: #bbbbbb;
     --color-border: #aaaaaa;
     --color-text: #000000;
 }
@@ -10,6 +11,7 @@
     --color-primary: #7b049c;
     --color-bg: #121212;
     --color-bg-select: #232323;
+    --color-active: #c539ec;
     --color-border: #cccccc;
     --color-text: #cccccc;
 }
@@ -53,8 +55,12 @@ body {
     border: 3px solid black;
 }
 
-.macro-current {
+.macro-active {
+    background-color: var(--color-active);
+}
 
+.macro-active:hover {
+    background-color: var(--color-active);
 }
 
 .macro-select {
@@ -82,6 +88,6 @@ body {
 
 .macro-add {
     width: 95%;
-    margin-left: 5px;
-    margin-right: 5px;
+    margin-left: 3px;
+    margin-right: 3px;
 }

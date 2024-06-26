@@ -39,7 +39,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 
-let populateKeymapButtons = async () => {
+let populateKeymapButtons = () => {
 
     invoke("send_keymap").then((result) => {
         keymap = result;
@@ -91,23 +91,28 @@ let openConfigPanel = (index: number) => {
 
     // manages the display for the current macro actions
     // close if last clicked button
-    if (index == prevIndex) {
+    if (index != prevIndex && prevIndex != null) {
         // check if there are unsaved changes
         if (dirty && !secondOpen) {
+            console.log("Save alert")
             secondOpen = true;
             saveAlertModal.show();
             return;
         } else {
-            populateKeymapButtons().then();
+            console.log("Changing current button")
+            dirty = false;
             secondOpen = false;
+            populateKeymapButtons();
         }
-        // set to null so button can open again
-        prevIndex = null;
-        return;
+    } else {
+        secondOpen = false;
+        dirty = false;
     }
 
-    // open collapse div
     prevIndex = index;
+
+    document.getElementById("button" + prevIndex)!.className =
+        document.getElementById("button" + prevIndex)!.className.concat(" macro-active");
 
     // copy current macro actions
     let button = keymap.buttons[index];

@@ -33,6 +33,7 @@
   },
   "homepage": "https://github.com/GearBoxFox/HotMap#readme",
   "dependencies": {
+    "@floating-ui/dom": "^1.6.6",
     "@popperjs/core": "^2.11.8",
     "@types/node": "^20.14.8",
     "boostrap": "^2.0.0",
