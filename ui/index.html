@@ -1,4 +1,4 @@
-<html lang="en" data-theme="light">
+<html lang="en" data-theme="dark">
 <head>
     <meta charset="UTF-8"/>
     <meta content="width=device-width height=device-height initial-scale=1.0" name="viewport"/>
@@ -13,10 +13,10 @@
 <script src="src/index.ts" type="module"></script>
 <div class="container-flex">
     <!-- Header -->
-    <div class="row h-10 bg-primary">
+    <div class="row h-10 header">
         <div class="col">
             <h1 class="h2 fw-bold position-relative top-50 translate-middle-y"
-                style="padding-left: 10px">HotMap</h1>
+                style="padding-left: 10px; color: var(--color-text)">HotMap</h1>
         </div>
         <!-- Dropdown -->
         <div class="col dropdown-center text-end">
@@ -51,7 +51,7 @@
             </div>
         </div>
     </div>
-    <div class="row h-25 overflow-scroll " style="max-height:40%">
+    <div class="row h-25 overflow-scroll content-box" style="max-height:40%">
         <!-- Key List -->
         <div class="list-group col flex-column" id="buttonContainer"
              style="padding-left: 10px; margin: 5px 5px 5px 5px;">
@@ -65,12 +65,14 @@
             </div>
         </div>
         <div class="col col-lg-auto" id="addMacroActions">
-            <div class="btn-group-vertical" role="group">
-                <button type="button" class="btn macro-add" id="Tap">Tap</button>
-                <button type="button" class="btn macro-add" id="Press">Press</button>
-                <button type="button" class="btn macro-add" id="Release">Release</button>
-                <button type="button" class="btn macro-add" id="Print">Print</button>
-                <button type="button" class="btn macro-add" id="Delay">Delay</button>
+            <div class="row" style="margin-top: 5px">
+                <div class="btn-group-vertical macro-add" role="group">
+                    <button type="button" class="btn content-box macro-add" id="Tap">Tap</button>
+                    <button type="button" class="btn content-box macro-add" id="Press">Press</button>
+                    <button type="button" class="btn content-box macro-add" id="Release">Release</button>
+                    <button type="button" class="btn content-box macro-add" id="Print">Print</button>
+                    <button type="button" class="btn content-box macro-add" id="Delay">Delay</button>
+                </div>
             </div>
             <div class="row" style="margin: 5px">
                 <button type="button" class="btn btn-primary" id="save-btn">Save</button>

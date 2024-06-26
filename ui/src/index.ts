@@ -56,7 +56,7 @@ let populateKeymapButtons = async () => {
         for (let x = 0; x < keymap.button_count; x++) {
             let button = keymap.buttons[x];
             let editButton = document.createElement("a");
-            editButton.className = "list-group-item list-group-item-action";
+            editButton.className = "list-group-item list-group-item-action content-box";
             editButton.id = "button" + x;
             editButton.textContent = button.programmable_key
 
@@ -70,7 +70,7 @@ let populateKeymapButtons = async () => {
 
         // add a new macro button
         let addButton = document.createElement("a");
-        addButton.className = "list-group-item list-group-item-action";
+        addButton.className = "list-group-item list-group-item-action content-box";
         addButton.textContent = "+"
 
         addButton.addEventListener("click", () => {
@@ -126,7 +126,7 @@ let openConfigPanel = (index: number) => {
         let newAction = document.createElement("label");
         let newDiv = document.createElement("div");
 
-        newDiv.className = "list-group-item macro-current small-border";
+        newDiv.className = "list-group-item macro-current content-box";
         newDiv.id = String(x);
         newAction.className = "fw-bold text-capitalize fs-6"
 
