@@ -26,22 +26,7 @@ mod windows_listener;
 
 fn main() {
     // Create dummy keymap
-    let keymap: Keymap = Keymap {
-        map_name: "Test Map".to_string(),
-        button_count: 1,
-        buttons: vec![MacroKey {
-            programmable_key: ProgrammableKeys::MACRO1,
-            macro_type: MacroType::Once,
-            actions: vec![
-                MacroAction::None,
-                MacroAction::Delay(1),
-                MacroAction::Tap(Key::Backspace),
-                MacroAction::Press(Key::KeyA),
-                MacroAction::Release(Key::KeyA),
-                MacroAction::Print("Hello, world!".to_string()),
-            ],
-        }],
-    };
+    let keymap: Keymap = Keymap::load_from_file("keymap".parse().unwrap()).unwrap();
 
     let keymap_arc: Arc<Mutex<Keymap>> = Arc::new(Mutex::new(keymap.clone()));
 

@@ -1,4 +1,4 @@
-use std::fs::File;
+use std::fs::{File, OpenOptions};
 use std::io;
 use std::io::{Error, ErrorKind, Read, Write};
 use std::ops::Add;
@@ -64,10 +64,7 @@ impl Keymap {
 
     /// Load a keymap json file into a Keymap struct, returning an error
     /// if no file is found.
-    pub fn load_from_file(
-        keymap_name: String,
-        keymap: &mut Arc<Mutex<Keymap>>,
-    ) -> Result<(), io::Error> {
+    pub fn load_from_file(keymap_name: String) -> Result<Keymap, Error> {
         // create the path to keymap json file in the appdata directory
         let mut keymap_path = path::local_data_dir().unwrap();
         let binding = keymap_name.to_string().add(".json");
@@ -75,12 +72,19 @@ impl Keymap {
         keymap_path.extend(["hotmap", "keymaps"]);
         keymap_path.push(file_name);
 
+        if (!keymap_path.exists()) {
+            return Ok(Keymap::new("keymap".to_string(), 1));
+        }
+
         // check if file exists, if not return an error
-        let mut keymap_file = match File::open(keymap_path) {
+        let mut keymap_file = match OpenOptions::new()
+            .read(true)
+            .create(true)
+            .open(keymap_path)
+        {
             Ok(file) => file,
             Err(err) => {
-                eprintln!("Failed to find keymap file!");
-                return Err(err);
+                return Ok(Keymap::new("keymap".to_string(), 1));
             }
         };
 
@@ -89,25 +93,10 @@ impl Keymap {
             .read_to_string(&mut keymap_json)
             .expect("Failed to read keymap file!");
 
-        let mut borrowed_keymap = match keymap.lock() {
-            Ok(borrowed_keymap) => borrowed_keymap,
-            Err(_err) => {
-                eprintln!("Failed to establish lock on keymap to load from file!");
-                return Err(Error::new(
-                    ErrorKind::PermissionDenied,
-                    "Could not establish lock!",
-                ));
-            }
-        };
-
         // copy values from json file into the used keymap
         let temp: Keymap = serde_json::from_str(&keymap_json).unwrap();
 
-        borrowed_keymap.map_name = temp.map_name;
-        borrowed_keymap.button_count = temp.button_count;
-        borrowed_keymap.buttons = temp.buttons;
-
-        Ok(())
+        Ok(temp)
     }
 
     /// Saves a Keymap struct to a json file
