@@ -11,7 +11,10 @@
   },
   "tauri": {
     "allowlist": {
-      "all": false
+      "all": false,
+      "fs" : {
+        "scope": ["$RESOURCE/*"]
+      }
     },
     "bundle": {
       "active": true,
@@ -37,7 +40,13 @@
         "providerShortName": null,
         "signingIdentity": null
       },
-      "resources": [],
+      "resources": [
+        "../ui/assets/bootstrap-icons-1.11.3/caret-up.svg",
+        "../ui/assets/bootstrap-icons-1.11.3/caret-down.svg",
+        "../ui/assets/bootstrap-icons-1.11.3/dash-lg.svg",
+        "../ui/assets/bootstrap-icons-1.11.3/moon-stars.svg",
+        "../ui/assets/bootstrap-icons-1.11.3/sun.svg"
+      ],
       "shortDescription": "",
       "targets": "all",
       "windows": {

@@ -56,6 +56,11 @@ body {
     border: var(--color-primary-dark);
 }
 
+.header-button:focus {
+    background: var(--color-primary-dark);
+    border: var(--color-primary-dark);
+}
+
 .header-dropdown {
     border-style: hidden;
     margin-right: 10px;
@@ -65,7 +70,12 @@ body {
     height: 10%;
 }
 
-::-webkit-scrollbar {
+* {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+*::-webkit-scrollbar {
     display: none;
 }
 

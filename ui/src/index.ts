@@ -2,6 +2,13 @@ import {Modal, Toast} from "bootstrap";
 import {invoke} from "@tauri-apps/api";
 import {createKeySelectorTemplate, Keys, sortedArray, sortedFormated} from "./ProgrammableKeys";
 
+// static assets
+const moonUrl = new URL('../assets/bootstrap-icons-1.11.3/moon-stars.svg', import.meta.url).href;
+const sunUrl = new URL("../assets/bootstrap-icons-1.11.3/sun.svg", import.meta.url).href;
+const upUrl = new URL("../assets/bootstrap-icons-1.11.3/caret-up.svg", import.meta.url).href;
+const downUrl = new URL("../assets/bootstrap-icons-1.11.3/caret-down.svg", import.meta.url).href;
+const removeUrl = new URL("../assets/bootstrap-icons-1.11.3/dash-lg.svg", import.meta.url).href;
+
 let keymap: any = null;
 let prevIndex: number | null = 0;
 let dirty: boolean = false;
@@ -13,7 +20,7 @@ let saveAlertModal: Modal;
 const localStorageTheme = localStorage.getItem("theme");
 const systemSettingDark = window.matchMedia("(prefers-color-scheme: dark)");
 
-let currentThemeSetting: string;
+let currentThemeSetting: string = "light";
 
 window.addEventListener('error', function(event) {
     console.error('Caught an error:', event.message);
@@ -68,10 +75,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
         let newImg = document.createElement("img");
         if (newTheme === "dark") {
-            newImg.src = "assets/bootstrap-icons-1.11.3/moon-stars.svg"
+            newImg.src = moonUrl;
         } else {
-            newImg.src = "assets/bootstrap-icons-1.11.3/sun.svg"
+            newImg.src = sunUrl;
         }
+
         button.innerHTML = '';
         button.append(newImg);
 
@@ -268,19 +276,19 @@ let addVisualMacro = (actionType: any, index: number) => {
     editDiv.className = "float-end"
 
     let upButton = document.createElement('img');
-    upButton.src = "../assets/bootstrap-icons-1.11.3/caret-up.svg";
+    upButton.src = upUrl;
     upButton.className = "macro-edit rounded";
 
     upButton.addEventListener("click", () => reorderMacro(index, true));
 
     let downButton = document.createElement('img');
-    downButton.src = "../assets/bootstrap-icons-1.11.3/caret-down.svg";
+    downButton.src = downUrl;
     downButton.className = "macro-edit rounded";
 
     downButton.addEventListener("click", () => reorderMacro(index, false));
 
     let removeButton = document.createElement('img');
-    removeButton.src = "../assets/bootstrap-icons-1.11.3/dash-lg.svg";
+    removeButton.src = removeUrl;
     removeButton.className = "macro-edit rounded";
 
     removeButton.addEventListener("mouseup", () => removeMacro(index));
