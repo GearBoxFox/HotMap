@@ -75,7 +75,10 @@ fn char_to_key_event(char: char) -> Key {
         '\'' => Key::Quote,
         '\"' => Key::Quote,
         '?' => Key::IntlBackslash,
-        '/' => Key::IntlBackslash,
+        '/' => Key::Slash,
+        '.' => Key::Dot,
+        '\\' => Key::BackSlash,
+        ',' => Key::Comma,
         _ => Key::Unknown(char.to_digit(10).unwrap()),
     }
 }
