@@ -237,7 +237,7 @@ let openConfigPanel = (index: number) => {
             let input = document.createElement("input");
             input.type = "text"
             input.alt = "Print"
-            input.value = "Hello world";
+            input.value = actionType.Print;
 
             input.className = "macro-input";
 
