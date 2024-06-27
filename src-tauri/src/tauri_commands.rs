@@ -39,14 +39,10 @@ pub fn save_keymap(keymap: Keymap, state: tauri::State<Arc<Mutex<Keymap>>>) {
             panic!("failed to acquire keymap lock");
         }
     };
-    println!("{:?}", keymap);
-    println!("{:?}", keymap_clone);
 
     keymap_clone.map_name = keymap.map_name;
     keymap_clone.buttons = keymap.buttons;
     keymap_clone.button_count = keymap.button_count;
-
-    println!("{:?}", keymap_clone);
 
     Keymap::save_to_file(keymap_clone.clone()).unwrap()
 }

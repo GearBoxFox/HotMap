@@ -3,7 +3,7 @@ import {invoke} from "@tauri-apps/api";
 import {createKeySelectorTemplate, Keys, sortedArray} from "./ProgrammableKeys";
 
 let keymap: any = null;
-let prevIndex: number | null = null;
+let prevIndex: number | null = 0;
 let dirty: boolean = false;
 let secondOpen: boolean = false;
 
@@ -31,19 +31,22 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // add save button event listeners
     document.getElementById("save-btn")!.addEventListener("click", () => {
-        dirty = false;
-        secondOpen = false;
         invoke("save_keymap", {keymap: keymap}).then(() => {
+            dirty = false;
+            secondOpen = false;
             new Toast(document.getElementById("saveToast")!).show();
+            openConfigPanel(prevIndex == null ? 0 : prevIndex);
         });
     });
 
     document.getElementById("save-btn-modal")!.addEventListener("click", () => {
-        dirty = false;
-        secondOpen = false;
-        saveAlertModal.hide();
+
         invoke("save_keymap", {keymap: keymap}).then(() => {
+            dirty = false;
+            secondOpen = false;
+            saveAlertModal.hide();
             new Toast(document.getElementById("saveToast")!).show();
+            openConfigPanel(prevIndex == null ? 0 : prevIndex);
         });
     });
 
@@ -187,8 +190,17 @@ let openConfigPanel = (index: number) => {
             newAction.textContent = "None";
             newDiv.append(newAction);
         } else if (actionType.hasOwnProperty("Delay")) {
-            newAction.textContent = "Delay: " + actionType.Delay + " ms";
-            newDiv.append(newAction);
+            newAction.textContent = "Delay (ms): ";
+            let input = document.createElement("input")
+            input.type = "number"
+            input.alt = "milliseconds"
+            input.value = String(1);
+
+            input.className = "macro-input";
+
+            input.addEventListener("change", () => updateMacroAction(x, input));
+
+            newDiv.append(newAction, input);
         } else if (actionType.hasOwnProperty("Tap")) {
             newAction.textContent = "Tap: ";
             let selector = createKeySelectorTemplate();
@@ -223,8 +235,16 @@ let openConfigPanel = (index: number) => {
 
             newDiv.append(newAction, selector);
         } else if (actionType.hasOwnProperty("Print")) {
-            newAction.textContent = "Print: " + actionType.Print
-            newDiv.append(newAction);
+            newAction.textContent = "Print: ";
+            let input = document.createElement("input");
+            input.type = "text"
+            input.alt = "Print"
+            input.value = "Hello world";
+
+            input.className = "macro-input";
+
+            input.addEventListener("change", () => updateMacroAction(x, input));
+            newDiv.append(newAction, input);
         } else {
             newAction.textContent = "Unknown Action"
             newDiv.append(newAction);
@@ -379,6 +399,14 @@ let updateMacroAction = (index: number, root: HTMLSelectElement | HTMLInputEleme
                 action.Press = root.selectedOptions.item(0)!.value;
             } else if (action.hasOwnProperty("Release")) {
                 action.Release = root.selectedOptions.item(0)!.value;
+            }
+        } else {
+            let action = keymap.buttons[prevIndex].actions[index];
+
+            if (action.hasOwnProperty("Delay")) {
+                action.Delay = root.valueAsNumber;
+            } else if (action.hasOwnProperty("Print")) {
+                action.Print = root.value;
             }
         }
 

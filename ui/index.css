@@ -2,9 +2,9 @@
     --color-primary: #2662ff;
     --color-primary-dark: #2643ff;
     --color-bg: #ffffff;
-    --color-bg-select: #eeeeee;
+    --color-bg-select: #aaaaaa;
     --color-active: #bbbbbb;
-    --color-border: #aaaaaa;
+    --color-border: #cccccc;
     --color-text: #000000;
 }
 
@@ -89,10 +89,18 @@ body {
     width: auto;
     min-width: 50%;
     max-width: 60%;
-    background-color: var(--color-bg-select);
+    background-color: var(--color-bg);
     color: var(--color-text);
     border: var(--color-border);
-    border-radius: 0;
+    border-style: solid;
+    border-radius: 3px;
+}
+
+.macro-input {
+    margin-left: 3px;
+    background-color: var(--color-bg);
+    border-color: var(--color-border);
+    border-radius: 3px;
 }
 
 .macro-edit {
@@ -108,4 +116,15 @@ body {
     width: 95%;
     margin-left: 3px;
     margin-right: 3px;
+    border: var(--color-border) 2px solid;
+    background: var(--color-bg);
+    color: var(--color-text);
 }
+
+.macro-add:hover {
+    border: var(--color-border) 2px solid;
+    background: var(--color-bg-select);
+    color: var(--color-text);
+}
+
+

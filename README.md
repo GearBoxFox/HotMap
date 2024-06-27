@@ -25,6 +25,9 @@ ___
 4. Add buttons to match your keyboard
 5. Configure the macro for each button
 
+> [!WARNING]  
+> There is a known issue with the `Print` action where you cannot use punctuation. A fix is in the works
+
 ## Building
 ______
 ### Requirements
