@@ -156,9 +156,10 @@ for (let i = 0; i < 104; i++) {
 
 sortedArray.sort();
 
+export let sortedFormated: any = [];
+
 export let createKeySelectorTemplate = () => {
     let keySelectorTemplate: HTMLSelectElement = document.createElement('select');
-    let tempArray: any = [];
 
     for (let i = 0; i < 104; i++) {
 
@@ -178,13 +179,13 @@ export let createKeySelectorTemplate = () => {
             text = text.replace("Shift", "Shift ");
         }
 
-        tempArray.push(text);
+        sortedFormated.push(text);
     }
 
-    for (let i = 0; i < tempArray.length; i++) {
+    for (let i = 0; i < sortedFormated.length; i++) {
         let option: HTMLOptionElement = document.createElement('option');
-        option.value = tempArray[i];
-        option.textContent = tempArray[i];
+        option.value = sortedFormated[i];
+        option.textContent = sortedFormated[i];
 
         keySelectorTemplate.options.add(option);
     }

@@ -1,6 +1,6 @@
 import {Modal, Toast} from "bootstrap";
 import {invoke} from "@tauri-apps/api";
-import {createKeySelectorTemplate, Keys, sortedArray} from "./ProgrammableKeys";
+import {createKeySelectorTemplate, Keys, sortedArray, sortedFormated} from "./ProgrammableKeys";
 
 let keymap: any = null;
 let prevIndex: number | null = 0;
@@ -35,7 +35,6 @@ document.addEventListener("DOMContentLoaded", () => {
             dirty = false;
             secondOpen = false;
             new Toast(document.getElementById("saveToast")!).show();
-            openConfigPanel(prevIndex == null ? 0 : prevIndex);
         });
     });
 
@@ -46,7 +45,6 @@ document.addEventListener("DOMContentLoaded", () => {
             secondOpen = false;
             saveAlertModal.hide();
             new Toast(document.getElementById("saveToast")!).show();
-            openConfigPanel(prevIndex == null ? 0 : prevIndex);
         });
     });
 
@@ -192,7 +190,7 @@ let openConfigPanel = (index: number) => {
         } else if (actionType.hasOwnProperty("Delay")) {
             newAction.textContent = "Delay (ms): ";
             let input = document.createElement("input")
-            input.type = "number"
+            input.type = "text"
             input.alt = "milliseconds"
             input.value = String(1);
 
@@ -391,20 +389,25 @@ let updateMacroAction = (index: number, root: HTMLSelectElement | HTMLInputEleme
     if (prevIndex != null) {
         if (root instanceof HTMLSelectElement) {
             let action = keymap.buttons[prevIndex].actions[index];
+            let selectedIndex =
+                Object.values(sortedFormated).indexOf(root.selectedOptions.item(0)!.value)
+            let actionValue = sortedArray[selectedIndex];
 
             // check action type and update accordingly
             if (action.hasOwnProperty("Tap")) {
-                action.Tap = root.selectedOptions.item(0)!.value;
+                action.Tap = actionValue;
             } else if (action.hasOwnProperty("Press")) {
-                action.Press = root.selectedOptions.item(0)!.value;
+                action.Press = actionValue;
             } else if (action.hasOwnProperty("Release")) {
-                action.Release = root.selectedOptions.item(0)!.value;
+                action.Release = actionValue;
             }
         } else {
             let action = keymap.buttons[prevIndex].actions[index];
+            console.log(action);
 
             if (action.hasOwnProperty("Delay")) {
-                action.Delay = root.valueAsNumber;
+                console.log(root.value);
+                action.Delay = Number(root.value);
             } else if (action.hasOwnProperty("Print")) {
                 action.Print = root.value;
             }
