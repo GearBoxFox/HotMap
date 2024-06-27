@@ -72,19 +72,20 @@ impl Keymap {
         keymap_path.extend(["hotmap", "keymaps"]);
         keymap_path.push(file_name);
 
-        if (!keymap_path.exists()) {
+        if !keymap_path.exists() {
+            println!("Didn't find existing keymap file");
             return Ok(Keymap::new("keymap".to_string(), 1));
         }
 
         // check if file exists, if not return an error
         let mut keymap_file = match OpenOptions::new()
             .read(true)
+            .write(true)
             .create(true)
-            .open(keymap_path)
-        {
+            .open(keymap_path) {
             Ok(file) => file,
             Err(err) => {
-                return Ok(Keymap::new("keymap".to_string(), 1));
+                return Err(err);
             }
         };
 
@@ -95,6 +96,8 @@ impl Keymap {
 
         // copy values from json file into the used keymap
         let temp: Keymap = serde_json::from_str(&keymap_json).unwrap();
+
+        println!("Keymap file exists: {:?}", temp);
 
         Ok(temp)
     }

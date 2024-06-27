@@ -4,11 +4,10 @@
 use std::sync::{Arc, Mutex};
 use std::{thread, time};
 
-use rdev::Key;
 use tauri::{CustomMenuItem, SystemTrayMenu, SystemTrayMenuItem};
 use tauri::{Manager, SystemTray, SystemTrayEvent};
 
-use crate::keymap::{Keymap, MacroAction, MacroKey, MacroType};
+use crate::keymap::Keymap;
 use crate::programmable_keys::ProgrammableKeys;
 use crate::tauri_commands::{add_button, save_keymap, send_keymap};
 
