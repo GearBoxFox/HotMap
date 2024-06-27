@@ -192,7 +192,7 @@ let openConfigPanel = (index: number) => {
             let input = document.createElement("input")
             input.type = "text"
             input.alt = "milliseconds"
-            input.value = String(1);
+            input.value = String(actionType.Delay);
 
             input.className = "macro-input";
 
