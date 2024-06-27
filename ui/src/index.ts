@@ -6,6 +6,7 @@ let keymap: any = null;
 let prevIndex: number | null = 0;
 let dirty: boolean = false;
 let secondOpen: boolean = false;
+let actionsDiv: HTMLDivElement;
 
 let saveAlertModal: Modal;
 
@@ -14,6 +15,10 @@ const systemSettingDark = window.matchMedia("(prefers-color-scheme: dark)");
 
 let currentThemeSetting: string;
 
+window.addEventListener('error', function(event) {
+    console.error('Caught an error:', event.message);
+    return false;
+});
 
 document.addEventListener("DOMContentLoaded", () => {
     currentThemeSetting = calculateSettingAsThemeString(localStorageTheme, systemSettingDark );
@@ -48,6 +53,9 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
 
+    // get the div element that stores the current macro actions
+    actionsDiv = document.getElementById("currentMacroActions")! as HTMLDivElement;
+
     // create button for dark mode toggle
     // target the button using the data attribute we added earlier
     const button = document.querySelector("[data-theme-toggle]")! as HTMLElement;
@@ -80,7 +88,6 @@ document.addEventListener("DOMContentLoaded", () => {
         // update the currentThemeSetting in memory
         currentThemeSetting = newTheme;
     });
-
 })
 
 let calculateSettingAsThemeString = (localStorageTheme: string | null, systemSettingDark: MediaQueryList) =>{
@@ -167,7 +174,6 @@ let openConfigPanel = (index: number) => {
 
     // copy current macro actions
     let button = keymap.buttons[index];
-    let actionsDiv = document.getElementById("currentMacroActions")!;
     actionsDiv.innerHTML = '';
 
     // label the currently active macro
@@ -176,110 +182,117 @@ let openConfigPanel = (index: number) => {
     // For each action
     for (let x = 0; x < button.actions.length; x++) {
         let actionType = button.actions[x];
-        let newAction = document.createElement("label");
-        let newDiv = document.createElement("div");
-
-        newDiv.className = "list-group-item macro-current content-box";
-        newDiv.id = String(x);
-        newAction.className = "fw-bold text-capitalize fs-6"
-
-        // check action type
-        if (actionType == "None") {
-            newAction.textContent = "None";
-            newDiv.append(newAction);
-        } else if (actionType.hasOwnProperty("Delay")) {
-            newAction.textContent = "Delay (ms): ";
-            let input = document.createElement("input")
-            input.type = "text"
-            input.alt = "milliseconds"
-            input.value = String(actionType.Delay);
-
-            input.className = "macro-input";
-
-            input.addEventListener("change", () => updateMacroAction(x, input));
-
-            newDiv.append(newAction, input);
-        } else if (actionType.hasOwnProperty("Tap")) {
-            newAction.textContent = "Tap: ";
-            let selector = createKeySelectorTemplate();
-            selector.selectedIndex = Object.values(sortedArray).indexOf(actionType.Tap);
-
-            // when selected element changes, update the keymap
-            selector.addEventListener("change", () => updateMacroAction(x, selector))
-
-            selector.className = "macro-select form-select";
-
-            newDiv.append(newAction, selector);
-        } else if (actionType.hasOwnProperty("Press")) {
-            newAction.textContent = "Press: ";
-            let selector = createKeySelectorTemplate();
-            selector.selectedIndex = Object.values(sortedArray).indexOf(actionType.Press);
-
-            // when selected element changes, update the keymap
-            selector.addEventListener("change", () => updateMacroAction(x, selector))
-
-            selector.className = "macro-select form-select";
-
-            newDiv.append(newAction, selector);
-        } else if (actionType.hasOwnProperty("Release")) {
-            newAction.textContent = "Release: ";
-            let selector = createKeySelectorTemplate();
-            selector.selectedIndex = Object.values(sortedArray).indexOf(actionType.Release);
-
-            // when selected element changes, update the keymap
-            selector.addEventListener("change", () => updateMacroAction(x, selector))
-
-            selector.className = "macro-select form-select";
-
-            newDiv.append(newAction, selector);
-        } else if (actionType.hasOwnProperty("Print")) {
-            newAction.textContent = "Print: ";
-            let input = document.createElement("input");
-            input.type = "text"
-            input.alt = "Print"
-            input.value = actionType.Print;
-
-            input.className = "macro-input";
-
-            input.addEventListener("change", () => updateMacroAction(x, input));
-            newDiv.append(newAction, input);
-        } else {
-            newAction.textContent = "Unknown Action"
-            newDiv.append(newAction);
-        }
-
-
-        // add remove and reorder buttons
-        let editDiv = document.createElement('div');
-        editDiv.className = "float-end"
-
-        let upButton = document.createElement('img');
-        upButton.src = "../assets/bootstrap-icons-1.11.3/caret-up.svg";
-        upButton.className = "macro-edit rounded";
-
-        upButton.addEventListener("click", () => reorderMacro(x, true));
-
-        let downButton = document.createElement('img');
-        downButton.src = "../assets/bootstrap-icons-1.11.3/caret-down.svg";
-        downButton.className = "macro-edit rounded";
-
-        downButton.addEventListener("click", () => reorderMacro(x, false));
-
-        let removeButton = document.createElement('img');
-        removeButton.src = "../assets/bootstrap-icons-1.11.3/dash-lg.svg";
-        removeButton.className = "macro-edit rounded";
-
-        removeButton.addEventListener("mouseup", () => removeMacro(x));
-
-        // add all new items to a div
-        editDiv.append(upButton);
-        editDiv.append(downButton);
-        editDiv.append(removeButton);
-
-        newDiv.append(editDiv)
-
-        actionsDiv.append(newDiv);
+        addVisualMacro(actionType, x);
     }
+}
+
+let addVisualMacro = (actionType: any, index: number) => {
+    let newAction = document.createElement("label");
+    let newDiv = document.createElement("div");
+
+    newDiv.className = "list-group-item macro-current content-box";
+    newDiv.id = String(index);
+    newAction.className = "fw-bold text-capitalize fs-6"
+
+    // check action type
+    if (actionType == "None") {
+        newAction.textContent = "None";
+        newDiv.append(newAction);
+    } else if (actionType.hasOwnProperty("Delay")) {
+        newAction.textContent = "Delay (ms): ";
+        let input = document.createElement("input")
+        input.type = "text"
+        input.alt = "milliseconds"
+        input.value = String(actionType.Delay);
+
+        input.className = "macro-input";
+
+        input.addEventListener("change", () => updateMacroAction(index, input));
+
+        newDiv.append(newAction, input);
+    } else if (actionType.hasOwnProperty("Tap")) {
+        newAction.textContent = "Tap: ";
+        let selector = createKeySelectorTemplate();
+        selector.selectedIndex = Object.values(sortedArray).indexOf(actionType.Tap);
+
+        // when selected element changes, update the keymap
+        selector.addEventListener("change", () => updateMacroAction(index, selector))
+
+        selector.className = "macro-select form-select";
+
+        newDiv.append(newAction, selector);
+    } else if (actionType.hasOwnProperty("Press")) {
+        newAction.textContent = "Press: ";
+        let selector = createKeySelectorTemplate();
+        selector.selectedIndex = Object.values(sortedArray).indexOf(actionType.Press);
+
+        // when selected element changes, update the keymap
+        selector.addEventListener("change", () => {
+            updateMacroAction(index, selector);
+        });
+
+        selector.className = "macro-select form-select";
+
+        newDiv.append(newAction, selector);
+        console.log("Added new 'Press' action");
+    } else if (actionType.hasOwnProperty("Release")) {
+        newAction.textContent = "Release: ";
+        let selector = createKeySelectorTemplate();
+        selector.selectedIndex = Object.values(sortedArray).indexOf(actionType.Release);
+
+        // when selected element changes, update the keymap
+        selector.addEventListener("change", () => updateMacroAction(index, selector))
+
+        selector.className = "macro-select form-select";
+
+        newDiv.append(newAction, selector);
+    } else if (actionType.hasOwnProperty("Print")) {
+        newAction.textContent = "Print: ";
+        let input = document.createElement("input");
+        input.type = "text"
+        input.alt = "Print"
+        input.value = actionType.Print;
+
+        input.className = "macro-input";
+
+        input.addEventListener("change", () => updateMacroAction(index, input));
+        newDiv.append(newAction, input);
+    } else {
+        newAction.textContent = "Unknown Action"
+        newDiv.append(newAction);
+    }
+
+
+    // add remove and reorder buttons
+    let editDiv = document.createElement('div');
+    editDiv.className = "float-end"
+
+    let upButton = document.createElement('img');
+    upButton.src = "../assets/bootstrap-icons-1.11.3/caret-up.svg";
+    upButton.className = "macro-edit rounded";
+
+    upButton.addEventListener("click", () => reorderMacro(index, true));
+
+    let downButton = document.createElement('img');
+    downButton.src = "../assets/bootstrap-icons-1.11.3/caret-down.svg";
+    downButton.className = "macro-edit rounded";
+
+    downButton.addEventListener("click", () => reorderMacro(index, false));
+
+    let removeButton = document.createElement('img');
+    removeButton.src = "../assets/bootstrap-icons-1.11.3/dash-lg.svg";
+    removeButton.className = "macro-edit rounded";
+
+    removeButton.addEventListener("mouseup", () => removeMacro(index));
+
+    // add all new items to a div
+    editDiv.append(upButton);
+    editDiv.append(downButton);
+    editDiv.append(removeButton);
+
+    newDiv.append(editDiv)
+
+    actionsDiv.append(newDiv);
 }
 
 let removeMacro = (index: number) => {
@@ -355,39 +368,42 @@ let addMacroAction = (buttonClicked: HTMLButtonElement) => {
         let button = keymap.buttons[prevIndex]!;
 
         // check the id of the button pressed and add the macro action
+        let action: any;
         switch (buttonClicked.id) {
             case "Delay":
-                button.actions.push({Delay: 1.0});
+                action = {Delay: 1.0};
                 break;
             case "Tap":
-                button.actions.push({Tap: Keys[Keys.KeyA].toString()});
+                action = {Tap: Keys[Keys.KeyA].toString()};
                 break;
             case "Press":
-                button.actions.push({Press: Keys[Keys.KeyA].toString()});
+                action = {Press: Keys[Keys.KeyA].toString()};
                 break;
             case "Release":
-                button.actions.push({Release: Keys[Keys.KeyA].toString()});
+                action = {Release: Keys[Keys.KeyA].toString()};
                 break;
             case "Print":
-                button.actions.push({Print: "Hello, world!"});
+                action = {Print: "Hello, world!"};
                 break;
             default:
-                button.actions.push("None");
+                action = "None";
         }
 
         // set 'dirty' aka made changes
         dirty = true;
 
-        // reload visual
-        let temp = prevIndex;
-        prevIndex = null
-        openConfigPanel(temp);
+        // add action to visual and keymap
+        button.actions.push(action);
+        addVisualMacro(action, button.actions.length - 1);
     }
 }
 
 let updateMacroAction = (index: number, root: HTMLSelectElement | HTMLInputElement) => {
+    console.log("Trying to edit macro");
     if (prevIndex != null) {
         if (root instanceof HTMLSelectElement) {
+            console.log("Selector was opened");
+
             let action = keymap.buttons[prevIndex].actions[index];
             let selectedIndex =
                 Object.values(sortedFormated).indexOf(root.selectedOptions.item(0)!.value)
@@ -401,6 +417,7 @@ let updateMacroAction = (index: number, root: HTMLSelectElement | HTMLInputEleme
             } else if (action.hasOwnProperty("Release")) {
                 action.Release = actionValue;
             }
+            console.log("Selector opened finished");
         } else {
             let action = keymap.buttons[prevIndex].actions[index];
             console.log(action);
