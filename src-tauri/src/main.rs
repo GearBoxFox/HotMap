@@ -97,16 +97,6 @@ fn main() {
             },
             _ => {}
         })
-        .setup(|app| {
-            // Event listeners for reloading the keymap on frontend
-            let id = app.listen_global("reload-keymap", |event| {
-                println!("got event-name with payload {:?}", event.payload());
-            });
-
-            app.emit_all("load-keymap", "").unwrap();
-
-            Ok(())
-        })
         .on_window_event(|event| match event.event() {
             tauri::WindowEvent::CloseRequested { api, .. } => {
                 event.window().hide().unwrap();

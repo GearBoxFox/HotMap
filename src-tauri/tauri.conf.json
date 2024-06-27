@@ -6,8 +6,8 @@
     "distDir": "../ui/dist"
   },
   "package": {
-    "productName": "hotmap",
-    "version": "0.1.0"
+    "productName": "Hotmap",
+    "version": "1.0.0"
   },
   "tauri": {
     "allowlist": {

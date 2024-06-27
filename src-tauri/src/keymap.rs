@@ -1,8 +1,7 @@
 use std::fs::{File, OpenOptions};
 use std::io;
-use std::io::{Error, ErrorKind, Read, Write};
+use std::io::{Error, Read, Write};
 use std::ops::Add;
-use std::sync::{Arc, Mutex};
 
 use rdev::Key;
 use serde::{Deserialize, Serialize};
@@ -82,7 +81,8 @@ impl Keymap {
             .read(true)
             .write(true)
             .create(true)
-            .open(keymap_path) {
+            .open(keymap_path)
+        {
             Ok(file) => file,
             Err(err) => {
                 return Err(err);

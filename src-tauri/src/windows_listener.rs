@@ -61,6 +61,7 @@ unsafe extern "system" fn wnd_proc(
     match msg {
         WM_INPUT => {
             let mut dwsize: u32 = std::mem::size_of::<RAWINPUT>() as u32;
+            #[allow(invalid_value)]
             let mut raw_input: RAWINPUT = std::mem::MaybeUninit::uninit().assume_init();
 
             GetRawInputData(

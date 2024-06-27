@@ -1,5 +1,5 @@
 [package]
-name = "Hotmap"
+name = "hotmap"
 version = "0.1.0"
 edition = "2021"
 
