@@ -1,15 +1,13 @@
+use std::{thread, time};
 use std::fs::{File, OpenOptions};
-use std::os::unix::{
-    fs::OpenOptionsExt,
-    io::{FromRawFd, IntoRawFd, RawFd},
-};
+use std::os::fd::OwnedFd;
+use std::os::unix::fs::OpenOptionsExt;
 use std::path::Path;
 use std::sync::{Arc, Mutex};
-use std::{thread, time};
 
+use input::{Event, Libinput, LibinputInterface};
 use input::event::keyboard::KeyboardEventTrait;
 use input::event::KeyboardEvent;
-use input::{Event, Libinput, LibinputInterface};
 use libc::{O_RDONLY, O_RDWR, O_WRONLY};
 
 use crate::programmable_keys::ProgrammableKeys;
@@ -19,18 +17,18 @@ const LIBINPUT_FETCH_DELAY: time::Duration = time::Duration::from_millis(20);
 struct Interface;
 
 impl LibinputInterface for Interface {
-    fn open_restricted(&mut self, path: &Path, flags: i32) -> Result<RawFd, i32> {
+    fn open_restricted(&mut self, path: &Path, flags: i32) -> Result<OwnedFd, i32> {
         OpenOptions::new()
             .custom_flags(flags)
             .read((flags & O_RDONLY != 0) | (flags & O_RDWR != 0))
             .write((flags & O_WRONLY != 0) | (flags & O_RDWR != 0))
             .open(path)
-            .map(|file| file.into_raw_fd())
+            .map(|file| file.into())
             .map_err(|err| err.raw_os_error().unwrap())
     }
-    fn close_restricted(&mut self, fd: RawFd) {
+    fn close_restricted(&mut self, fd: OwnedFd) {
         unsafe {
-            File::from_raw_fd(fd);
+            let _ = File::from(fd);
         }
     }
 }
