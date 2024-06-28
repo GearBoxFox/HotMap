@@ -1,13 +1,13 @@
+use std::{thread, time};
 use std::fs::{File, OpenOptions};
 use std::os::fd::OwnedFd;
 use std::os::unix::fs::OpenOptionsExt;
 use std::path::Path;
 use std::sync::{Arc, Mutex};
-use std::{thread, time};
 
+use input::{Event, Libinput, LibinputInterface};
 use input::event::keyboard::KeyboardEventTrait;
 use input::event::KeyboardEvent;
-use input::{Event, Libinput, LibinputInterface};
 use libc::{O_RDONLY, O_RDWR, O_WRONLY};
 
 use crate::programmable_keys::ProgrammableKeys;
@@ -41,9 +41,7 @@ fn watch_events(input: Libinput, queue: &Arc<Mutex<Vec<ProgrammableKeys>>>) {
                         if event.key_state() == input::event::keyboard::KeyState::Pressed {
                             let prog_key = ProgrammableKeys::from_u32(event.key());
                             match prog_key {
-                                ProgrammableKeys::MACROUNKNOWN => {
-                                    eprintln!("MACROUNKOWN PRESSED");
-                                }
+                                ProgrammableKeys::MACROUNKNOWN => {}
                                 _ => match queue.lock() {
                                     Ok(mut borrowed_queue) => {
                                         borrowed_queue.push(prog_key);
@@ -74,6 +72,6 @@ pub fn linux_start(queue: &Arc<Mutex<Vec<ProgrammableKeys>>>) {
         Ok(_) => {
             watch_events(input, &queue);
         }
-        Err(_) => eprintln!("Failed to assign seat"),
+        Err(_) => println!("Failed to assign seat"),
     }
 }
