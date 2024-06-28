@@ -1,13 +1,13 @@
-use std::{thread, time};
 use std::fs::{File, OpenOptions};
 use std::os::fd::OwnedFd;
 use std::os::unix::fs::OpenOptionsExt;
 use std::path::Path;
 use std::sync::{Arc, Mutex};
+use std::{thread, time};
 
-use input::{Event, Libinput, LibinputInterface};
 use input::event::keyboard::KeyboardEventTrait;
 use input::event::KeyboardEvent;
+use input::{Event, Libinput, LibinputInterface};
 use libc::{O_RDONLY, O_RDWR, O_WRONLY};
 
 use crate::programmable_keys::ProgrammableKeys;
@@ -27,9 +27,7 @@ impl LibinputInterface for Interface {
             .map_err(|err| err.raw_os_error().unwrap())
     }
     fn close_restricted(&mut self, fd: OwnedFd) {
-        unsafe {
-            let _ = File::from(fd);
-        }
+        let _ = File::from(fd);
     }
 }
 
