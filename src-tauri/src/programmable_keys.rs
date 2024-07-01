@@ -3,7 +3,7 @@ use std::sync::{Arc, Mutex};
 use std::thread;
 use std::time::Duration;
 
-use rdev::{simulate, EventType, Key};
+use rdev::{EventType, Key, simulate};
 use serde::{Deserialize, Serialize};
 
 use crate::keymap::{Keymap, MacroAction, MacroKey};
@@ -15,7 +15,7 @@ fn send(event_type: &EventType) {
     match simulate(event_type) {
         Ok(()) => (),
         Err(_) => {
-            eprintln!("Could not simulate event type {:?}!", event_type);
+            println!("Could not simulate event type {:?}!", event_type);
         }
     }
 
