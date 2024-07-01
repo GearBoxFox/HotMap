@@ -1,9 +1,10 @@
 // Prevents additional console window on Windows in release, DO NOT REMOVE!!
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
-use std::sync::{Arc, Mutex};
 use std::{thread, time};
+use std::sync::{Arc, Mutex};
 
+use enigo::Settings;
 use tauri::{CustomMenuItem, SystemTrayMenu, SystemTrayMenuItem};
 use tauri::{Manager, SystemTray, SystemTrayEvent};
 
@@ -37,6 +38,7 @@ fn main() {
     let keymap_clone = keymap_arc.clone();
     thread::spawn(move || {
         println!("started handler thread");
+
         loop {
             thread::sleep(QUEUE_CHECKING_DELAY);
 
@@ -50,8 +52,9 @@ fn main() {
 
             match retrieved_key {
                 Some(key) => {
-                    println!("Handling a keypress");
-                    ProgrammableKeys::process_keys(key, &keymap_clone);
+                    eprintln!("Handling a keypress");
+                    let mut simulator = enigo::Enigo::new(&Settings::default()).unwrap();
+                    ProgrammableKeys::process_keys(key, &keymap_clone, simulator);
                 }
                 None => {}
             }

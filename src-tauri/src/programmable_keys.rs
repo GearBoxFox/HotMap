@@ -3,44 +3,12 @@ use std::sync::{Arc, Mutex};
 use std::thread;
 use std::time::Duration;
 
-use rdev::{EventType, Key, simulate};
+use enigo::{Enigo, Keyboard};
 use serde::{Deserialize, Serialize};
 
-use crate::keymap::{Keymap, MacroAction, MacroKey};
+use crate::keymap::{Key, Keymap, MacroAction, MacroKey};
 
 static DELAY: Duration = Duration::from_millis(20);
-
-/// Sends a raw keypress
-fn send(event_type: &EventType) {
-    match simulate(event_type) {
-        Ok(()) => (),
-        Err(_) => {
-            println!("Could not simulate event type {:?}!", event_type);
-        }
-    }
-
-    thread::sleep(DELAY);
-}
-
-/// Sends all the key presses needed to send a string
-fn send_string(string: String) {
-    for char in string.chars() {
-        if char.is_uppercase() {
-            send(&EventType::KeyPress(Key::ShiftLeft));
-        }
-
-        send(&EventType::KeyPress(char_to_key_event(
-            char.to_lowercase().next().unwrap(),
-        )));
-        send(&EventType::KeyRelease(char_to_key_event(
-            char.to_lowercase().next().unwrap(),
-        )));
-
-        if char.is_uppercase() {
-            send(&EventType::KeyRelease(Key::ShiftLeft));
-        }
-    }
-}
 
 /// Converts a char into a rdev KeyEvent
 fn char_to_key_event(char: char) -> Key {
@@ -100,19 +68,116 @@ fn char_to_key_event(char: char) -> Key {
 }
 
 /// handles all the actions bound to a macro key
-fn handle_macro_key(macro_key: MacroKey) {
+fn handle_macro_key(macro_key: MacroKey, mut simulator: Enigo) {
     for action in macro_key.actions {
         match action {
-            MacroAction::Print(string) => send_string(string),
-            MacroAction::Tap(key) => {
-                send(&EventType::KeyPress(key));
-                send(&EventType::KeyRelease(key));
-            }
-            MacroAction::Press(key) => send(&EventType::KeyPress(key)),
-            MacroAction::Release(key) => send(&EventType::KeyRelease(key)),
+            MacroAction::Print(string) => simulator.text(&*string).unwrap(),
+            MacroAction::Tap(key) => simulator
+                .key(match_key_to_enigo(key), enigo::Direction::Click)
+                .unwrap(),
+            MacroAction::Press(key) => simulator
+                .key(match_key_to_enigo(key), enigo::Direction::Press)
+                .unwrap(),
+            MacroAction::Release(key) => simulator
+                .key(match_key_to_enigo(key), enigo::Direction::Release)
+                .unwrap(),
             MacroAction::Delay(ms) => thread::sleep(Duration::from_millis(ms)),
             MacroAction::None => {}
         }
+    }
+}
+
+fn match_key_to_enigo(key: Key) -> enigo::Key {
+    match key {
+        Key::Alt => enigo::Key::Alt,
+        Key::Backspace => enigo::Key::Backspace,
+        Key::CapsLock => enigo::Key::CapsLock,
+        Key::ControlLeft => enigo::Key::LControl,
+        Key::ControlRight => enigo::Key::RControl,
+        Key::Delete => enigo::Key::Delete,
+        Key::DownArrow => enigo::Key::DownArrow,
+        Key::End => enigo::Key::End,
+        Key::Escape => enigo::Key::Escape,
+        Key::F1 => enigo::Key::F1,
+        Key::F10 => enigo::Key::F10,
+        Key::F11 => enigo::Key::F11,
+        Key::F12 => enigo::Key::F12,
+        Key::F2 => enigo::Key::F2,
+        Key::F3 => enigo::Key::F3,
+        Key::F4 => enigo::Key::F4,
+        Key::F5 => enigo::Key::F5,
+        Key::F6 => enigo::Key::F6,
+        Key::F7 => enigo::Key::F7,
+        Key::F8 => enigo::Key::F8,
+        Key::F9 => enigo::Key::F9,
+        Key::Home => enigo::Key::Home,
+        Key::LeftArrow => enigo::Key::LeftArrow,
+        Key::MetaLeft => enigo::Key::Meta,
+        Key::MetaRight => enigo::Key::Meta,
+        Key::PageDown => enigo::Key::PageDown,
+        Key::PageUp => enigo::Key::PageUp,
+        Key::Return => enigo::Key::Return,
+        Key::RightArrow => enigo::Key::RightArrow,
+        Key::ShiftLeft => enigo::Key::LShift,
+        Key::ShiftRight => enigo::Key::RShift,
+        Key::Space => enigo::Key::Space,
+        Key::Tab => enigo::Key::Tab,
+        Key::UpArrow => enigo::Key::UpArrow,
+        Key::PrintScreen => enigo::Key::Print,
+        Key::Pause => enigo::Key::Pause,
+        Key::NumLock => enigo::Key::Numlock,
+        Key::BackQuote => enigo::Key::Unicode('\''),
+        Key::Num1 => enigo::Key::Unicode('1'),
+        Key::Num2 => enigo::Key::Unicode('2'),
+        Key::Num3 => enigo::Key::Unicode('3'),
+        Key::Num4 => enigo::Key::Unicode('4'),
+        Key::Num5 => enigo::Key::Unicode('5'),
+        Key::Num6 => enigo::Key::Unicode('6'),
+        Key::Num7 => enigo::Key::Unicode('7'),
+        Key::Num8 => enigo::Key::Unicode('8'),
+        Key::Num9 => enigo::Key::Unicode('9'),
+        Key::Num0 => enigo::Key::Unicode('0'),
+        Key::Minus => enigo::Key::Unicode('-'),
+        Key::Equal => enigo::Key::Unicode('='),
+        Key::KeyQ => enigo::Key::Unicode('q'),
+        Key::KeyW => enigo::Key::Unicode('w'),
+        Key::KeyE => enigo::Key::Unicode('e'),
+        Key::KeyR => enigo::Key::Unicode('r'),
+        Key::KeyT => enigo::Key::Unicode('t'),
+        Key::KeyY => enigo::Key::Unicode('y'),
+        Key::KeyU => enigo::Key::Unicode('u'),
+        Key::KeyI => enigo::Key::Unicode('i'),
+        Key::KeyO => enigo::Key::Unicode('o'),
+        Key::KeyP => enigo::Key::Unicode('p'),
+        Key::LeftBracket => enigo::Key::Unicode('['),
+        Key::RightBracket => enigo::Key::Unicode(']'),
+        Key::KeyA => enigo::Key::Unicode('a'),
+        Key::KeyS => enigo::Key::Unicode('s'),
+        Key::KeyD => enigo::Key::Unicode('d'),
+        Key::KeyF => enigo::Key::Unicode('f'),
+        Key::KeyG => enigo::Key::Unicode('g'),
+        Key::KeyH => enigo::Key::Unicode('h'),
+        Key::KeyJ => enigo::Key::Unicode('j'),
+        Key::KeyK => enigo::Key::Unicode('k'),
+        Key::KeyL => enigo::Key::Unicode('l'),
+        Key::SemiColon => enigo::Key::Unicode(';'),
+        Key::Quote => enigo::Key::Unicode('\''),
+        Key::BackSlash => enigo::Key::Unicode('\\'),
+        Key::IntlBackslash => enigo::Key::Unicode('\\'),
+        Key::KeyZ => enigo::Key::Unicode('z'),
+        Key::KeyX => enigo::Key::Unicode('x'),
+        Key::KeyC => enigo::Key::Unicode('c'),
+        Key::KeyV => enigo::Key::Unicode('v'),
+        Key::KeyB => enigo::Key::Unicode('b'),
+        Key::KeyN => enigo::Key::Unicode('n'),
+        Key::KeyM => enigo::Key::Unicode('m'),
+        Key::Comma => enigo::Key::Unicode(','),
+        Key::Dot => enigo::Key::Unicode('.'),
+        Key::Slash => enigo::Key::Unicode('/'),
+        Key::Insert => enigo::Key::Insert,
+        Key::KpPlus => enigo::Key::Unicode('+'),
+        Key::KpMultiply => enigo::Key::Unicode('*'),
+        Key::Unknown(num) => enigo::Key::Other(num.into()),
     }
 }
 
@@ -310,7 +375,7 @@ impl ProgrammableKeys {
         }
     }
 
-    pub fn process_keys(key: ProgrammableKeys, keymap_arc: &Arc<Mutex<Keymap>>) {
+    pub fn process_keys(key: ProgrammableKeys, keymap_arc: &Arc<Mutex<Keymap>>, simulator: Enigo) {
         let borrowed_map = match keymap_arc.lock() {
             Ok(keymap) => Some(keymap),
             Err(err) => {
@@ -331,7 +396,7 @@ impl ProgrammableKeys {
                     Some(key) => key,
                 };
 
-                handle_macro_key(matching_key);
+                handle_macro_key(matching_key, simulator);
             }
             None => (),
         }
