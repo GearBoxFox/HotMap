@@ -124,7 +124,6 @@ fn match_key_to_enigo(key: Key) -> enigo::Key {
         Key::Tab => enigo::Key::Tab,
         Key::UpArrow => enigo::Key::UpArrow,
         Key::PrintScreen => enigo::Key::Print,
-        Key::ScrollLock => enigo::Key::ScrollLock,
         Key::Pause => enigo::Key::Pause,
         Key::NumLock => enigo::Key::Numlock,
         Key::BackQuote => enigo::Key::Unicode('\''),

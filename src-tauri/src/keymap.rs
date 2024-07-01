@@ -47,7 +47,6 @@ pub enum Key {
     Tab,
     UpArrow,
     PrintScreen,
-    ScrollLock,
     Pause,
     NumLock,
     BackQuote,
