@@ -8,65 +8,6 @@ use serde::{Deserialize, Serialize};
 
 use crate::keymap::{Key, Keymap, MacroAction, MacroKey};
 
-static DELAY: Duration = Duration::from_millis(20);
-
-/// Converts a char into a rdev KeyEvent
-fn char_to_key_event(char: char) -> Key {
-    match char {
-        'a' => Key::KeyA,
-        'b' => Key::KeyB,
-        'c' => Key::KeyC,
-        'd' => Key::KeyD,
-        'e' => Key::KeyE,
-        'f' => Key::KeyF,
-        'g' => Key::KeyG,
-        'h' => Key::KeyH,
-        'i' => Key::KeyI,
-        'j' => Key::KeyJ,
-        'k' => Key::KeyK,
-        'l' => Key::KeyL,
-        'm' => Key::KeyM,
-        'n' => Key::KeyN,
-        'o' => Key::KeyO,
-        'p' => Key::KeyP,
-        'q' => Key::KeyQ,
-        'r' => Key::KeyR,
-        's' => Key::KeyS,
-        't' => Key::KeyT,
-        'u' => Key::KeyU,
-        'v' => Key::KeyV,
-        'w' => Key::KeyW,
-        'x' => Key::KeyX,
-        'y' => Key::KeyY,
-        'z' => Key::KeyZ,
-        ' ' => Key::Space,
-        '\'' => Key::Quote,
-        '\"' => Key::Quote,
-        '?' => Key::IntlBackslash,
-        '/' => Key::Slash,
-        '.' => Key::Dot,
-        '\\' => Key::BackSlash,
-        ',' => Key::Comma,
-        '+' => Key::KpPlus,
-        '*' => Key::KpMultiply,
-        '-' => Key::Minus,
-        '=' => Key::Equal,
-        '[' => Key::LeftBracket,
-        ']' => Key::RightBracket,
-        '1' => Key::Num1,
-        '2' => Key::Num2,
-        '3' => Key::Num3,
-        '4' => Key::Num4,
-        '5' => Key::Num5,
-        '6' => Key::Num6,
-        '7' => Key::Num7,
-        '8' => Key::Num8,
-        '9' => Key::Num9,
-        '0' => Key::Num0,
-        _ => Key::Unknown(0),
-    }
-}
-
 /// handles all the actions bound to a macro key
 fn handle_macro_key(macro_key: MacroKey, mut simulator: Enigo) {
     for action in macro_key.actions {
