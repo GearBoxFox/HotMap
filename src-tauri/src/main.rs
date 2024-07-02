@@ -25,9 +25,6 @@ mod linux_listener;
 mod windows_listener;
 
 fn main() {
-    //linux libinput needs sudo to run, so check that first
-    sudo::escalate_if_needed().unwrap();
-
     // Create dummy keymap
     let keymap: Keymap = Keymap::load_from_file("keymap".parse().unwrap()).unwrap();
 
