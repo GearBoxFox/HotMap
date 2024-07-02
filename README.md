@@ -21,9 +21,9 @@ allowing for on-the-fly updating of keybindings without having to recompile or d
 
 1. Install the latest release for your platform in the Releases page
 
+> ![Warning] \
 > Linux users will have to make sure to run Hotmap with elevated privileges for
 > the backend to run properly
->
 
 2. Add Programmable Button to your QMK firmware
 
