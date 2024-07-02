@@ -53,7 +53,7 @@ fn main() {
             match retrieved_key {
                 Some(key) => {
                     eprintln!("Handling a keypress");
-                    let mut simulator = enigo::Enigo::new(&Settings::default()).unwrap();
+                    let simulator = enigo::Enigo::new(&Settings::default()).unwrap();
                     ProgrammableKeys::process_keys(key, &keymap_clone, simulator);
                 }
                 None => {}
